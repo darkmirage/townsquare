@@ -6,6 +6,7 @@ import '@blueprintjs/core/lib/css/blueprint.css';
 
 import App from 'components/App';
 import * as serviceWorker from './serviceWorker';
+import './index.css';
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
