@@ -1,10 +1,9 @@
 import React from 'react';
-import { Button, IButtonProps } from '@blueprintjs/core';
 import { createUseStyles } from 'react-jss';
 
 import firebase from 'firebaseApp';
 
-const SignInButton = (props: IButtonProps) => {
+const SignInButton = (props: React.ComponentPropsWithoutRef<'button'>) => {
   const classes = useStyles();
 
   const handleClick = React.useCallback(async () => {
