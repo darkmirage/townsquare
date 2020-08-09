@@ -2,7 +2,7 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import firebase from 'firebaseApp';
-import AuthContext from 'AuthContext';
+import AuthContext from 'contexts/AuthContext';
 import SignInButton from './SignInButton';
 
 (window as any).firebase = firebase;
@@ -22,7 +22,7 @@ const SignInScreen = (
         props.history.push('/t/stanford');
       }
     }
-  }, [currentUser]);
+  }, [currentUser, props.history, props.location.state]);
 
   return <SignInButton />;
 };
