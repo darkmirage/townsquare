@@ -1,23 +1,27 @@
 import React from 'react';
 import { Route, RouteProps, Redirect } from 'react-router-dom';
+import { useStoreState } from 'pullstate';
 
-import AuthContext from 'contexts/AuthContext';
+import { AuthStore } from 'stores';
 
 type Props = RouteProps;
 
 const PrivateRoute = ({ component: Component, render, ...rest }: Props) => {
-  const currentUser = React.useContext(AuthContext);
-  console.log(currentUser);
+  const { user, loading } = useStoreState(AuthStore);
 
   if (!Component) {
     throw new Error('Missing component');
+  }
+
+  if (loading) {
+    return null;
   }
 
   return (
     <Route
       {...rest}
       render={(innerProps) => {
-        return currentUser ? (
+        return user ? (
           <Component {...innerProps} />
         ) : (
           <Redirect

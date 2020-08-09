@@ -4,28 +4,21 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import PrivateRoute from './PrivateRoute';
 import SignInScreen from './SignInScreen';
-import TownSquareScreen from './TownSquareScreen';
-import AuthProvider from './AuthProvider';
+import SquareScreen from './SquareScreen';
 
 const App = () => {
   const classes = useStyles();
 
-  return (
-    <div className={classes.root}>
-      <AuthProvider>
-        <BrowserRouter>
-          <Switch>
-            <Route exact path="/" component={SignInScreen} />
-            <PrivateRoute
-              exact
-              path="/t/:squareId"
-              component={TownSquareScreen}
-            />
-          </Switch>
-        </BrowserRouter>
-      </AuthProvider>
-    </div>
+  const routes = (
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/" component={SignInScreen} />
+        <PrivateRoute exact path="/t/:squareId" component={SquareScreen} />
+      </Switch>
+    </BrowserRouter>
   );
+
+  return <div className={classes.root}>{routes}</div>;
 };
 
 const useStyles = createUseStyles({

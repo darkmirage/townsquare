@@ -20,4 +20,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
+(window as any).firebase = firebase;
+
 export default firebase;
