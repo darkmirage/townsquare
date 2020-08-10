@@ -25,35 +25,32 @@ const initialState: State = {
 
 const SquareStore = new Store(initialState);
 
-let unsubscribe = firebase
-  .firestore()
-  .doc('/squares/default')
-  .onSnapshot(() => {});
+let unsubscribe: Function | null = null;
 
 SquareStore.subscribe(
   (s) => s.id,
   (newId) => {
-    unsubscribe();
+    if (unsubscribe) {
+      unsubscribe();
+    }
+
     SquareStore.update((s) => {
       s.loading = true;
     });
 
     firebase
       .functions()
-      .httpsCallable('joinSquare')()
-      .then((townerId) => {
-        return firebase.firestore().doc(`/towners/${townerId}`).get();
-      })
-      .then((doc) => {
-        const towner = doc.data() as Towner;
+      .httpsCallable('joinSquare')(newId)
+      .then((towner) => {
         SquareStore.update((s) => {
-          s.self = towner;
+          s.self = (towner as any) as Towner;
         });
       });
 
     unsubscribe = firebase
       .firestore()
-      .doc('/squares/' + newId)
+      .collection('squares')
+      .doc(newId)
       .onSnapshot((snapshot) => {
         const data = snapshot.data();
         if (!data) {

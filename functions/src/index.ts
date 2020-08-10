@@ -4,6 +4,7 @@ import * as admin from 'firebase-admin';
 admin.initializeApp();
 
 export const joinSquare = functions.https.onCall(async (data, context) => {
+  const squareId: string = data;
   const uid = context.auth?.uid;
   if (!uid) {
     throw new functions.https.HttpsError(
@@ -14,8 +15,15 @@ export const joinSquare = functions.https.onCall(async (data, context) => {
 
   const user = await admin.auth().getUser(uid);
 
+  if (!squareId) {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'Invalid SquareID'
+    );
+  }
+
   // TODO: validate permission per Square
-  if (!user.email || !user.email.includes('stanford.edu')) {
+  if (!user.email) {
     throw new functions.https.HttpsError(
       'permission-denied',
       'User is not in the beta'
@@ -24,22 +32,33 @@ export const joinSquare = functions.https.onCall(async (data, context) => {
 
   const snapshot = await admin
     .firestore()
-    .collection('/townersPrivate')
+    .collection('townersPrivate')
     .where('userId', '==', uid)
-    .where('squareId', '==', 'stanford')
+    .where('squareId', '==', squareId)
     .get();
-  if (snapshot.size === 0) {
-    const doc = await admin.firestore().collection('/townersPrivate').add({
-      userId: uid,
-      squareId: 'stanford',
-    });
-    await admin.firestore().collection('/towners').doc(doc.id).set({
-      displayName: user.displayName,
-    });
 
-    return doc.id;
+  let towner = {
+    displayName: user.displayName,
+  };
+  let townerId = '';
+
+  if (snapshot.size === 0) {
+    const ref = await admin.firestore().collection('townersPrivate').add({
+      userId: uid,
+      squareId,
+    });
+    await admin.firestore().collection('towners').doc(ref.id).set(towner);
+    townerId = ref.id;
   } else {
     const doc = snapshot.docs[0];
-    return doc.id;
+    towner = doc.data() as any;
+    townerId = doc.id;
   }
+
+  const squareRef = admin.firestore().collection('squares').doc(squareId);
+  await squareRef.update({
+    towners: admin.firestore.FieldValue.arrayUnion(townerId),
+  });
+
+  return towner;
 });

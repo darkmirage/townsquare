@@ -2,22 +2,20 @@ import React from 'react';
 import { useStoreState } from 'pullstate';
 
 import { TownerStore, TownerID } from 'stores';
+import TownerBox from './TownerBox';
 
 type Props = {
   townerIds: TownerID[];
 };
 
 const TownerList = (props: Props) => {
-  const { townerMap, loading } = useStoreState(TownerStore);
+  const { loading } = useStoreState(TownerStore);
 
   if (loading) {
     return null;
   }
 
-  const elems = props.townerIds.map((id) => {
-    const towner = townerMap[id];
-    return <div key={id}>{towner.displayName}</div>;
-  });
+  const elems = props.townerIds.map((id) => <TownerBox key={id} id={id} />);
 
   return (
     <div>
