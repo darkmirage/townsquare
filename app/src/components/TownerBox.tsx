@@ -1,22 +1,15 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
-
-import { TownerStore, TownerID } from 'stores';
+import { gql } from '@apollo/client';
 
 type Props = {
-  id: TownerID;
+  towner: any;
 };
 
 const TownerBox = (props: Props) => {
-  const { townerMap } = TownerStore.useState();
   const classes = useStyles();
 
-  const towner = townerMap[props.id];
-  if (!towner) {
-    return null;
-  }
-
-  return <div className={classes.TownerBox}>{towner.displayName}</div>;
+  return <div className={classes.TownerBox}>{props.towner.name}</div>;
 };
 
 const useStyles = createUseStyles({
@@ -30,5 +23,16 @@ const useStyles = createUseStyles({
     boxShadow: '0 0 8px rgba(0, 0, 0, 0.2)',
   },
 });
+
+TownerBox.fragments = {
+  towner: gql`
+    fragment TownerBoxTowner on towner {
+      id
+      name
+      is_online
+      is_visitor
+    }
+  `,
+};
 
 export default TownerBox;

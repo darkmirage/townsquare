@@ -1,21 +1,17 @@
 import React from 'react';
-import { useStoreState } from 'pullstate';
+import { gql } from '@apollo/client';
 
-import { TownerStore, TownerID } from 'stores';
 import TownerBox from './TownerBox';
 
 type Props = {
-  townerIds: TownerID[];
+  square: any;
 };
 
 const TownerList = (props: Props) => {
-  const { loading } = useStoreState(TownerStore);
-
-  if (loading) {
-    return null;
-  }
-
-  const elems = props.townerIds.map((id) => <TownerBox key={id} id={id} />);
+  const { towners } = props.square;
+  const elems = towners.map((towner: any) => (
+    <TownerBox key={towner.id} towner={towner} />
+  ));
 
   return (
     <div>
@@ -23,6 +19,19 @@ const TownerList = (props: Props) => {
       {elems}
     </div>
   );
+};
+
+TownerList.fragments = {
+  square: gql`
+    fragment TownerListSquare on square {
+      towners {
+        id
+        ...TownerBoxTowner
+      }
+    }
+
+    ${TownerBox.fragments.towner}
+  `,
 };
 
 export default TownerList;

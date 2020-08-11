@@ -1,14 +1,13 @@
 import React from 'react';
-import { useStoreState } from 'pullstate';
 import { RouteComponentProps } from 'react-router-dom';
 
 import SignInButton from './SignInButton';
-import { AuthStore } from 'stores';
+import { AuthContext } from './AuthProvider';
 
 const SignInScreen = (
   props: RouteComponentProps<{}, {}, { referrer: string } | undefined>
 ) => {
-  const { user, loading } = useStoreState(AuthStore);
+  const { user, loading } = React.useContext(AuthContext);
 
   React.useEffect(() => {
     if (user) {
