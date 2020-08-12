@@ -13,7 +13,7 @@ const names = [
   'Roger Mile',
   'Louise Clark',
   'Janie Rodgers',
-  'Doris Lawson', 
+  'Doris Lawson',
 ];
 
 (async () => {
@@ -48,11 +48,11 @@ const names = [
   const promises = names.map(async (name) => {
     const [user] = await User.findOrCreate({
       where: {
-        email: `${name.replace(' ', '.').toLocaleLowerCase()}@stanford.edu`
+        email: `${name.replace(' ', '.').toLocaleLowerCase()}@stanford.edu`,
       },
       defaults: {
         firebaseId: uuid().toString(),
-      }
+      },
     });
     await Towner.findOrCreate({
       where: {
@@ -62,7 +62,7 @@ const names = [
         squareId: (square as any).id,
         userId: (user as any).id,
       },
-    })
+    });
   });
 
   await Promise.all(promises);
