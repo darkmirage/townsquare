@@ -34,14 +34,22 @@ const SquareScreen = (
 
   return (
     <div className={classes.SquareScreen}>
-      {square.name}
+      <div className={classes.SquareScreen_name}>{square.name}</div>
       <TownerList square={square} />
     </div>
   );
 };
 
 const useStyles = createUseStyles({
-  SquareScreen: {},
+  SquareScreen: {
+    maxWidth: 960,
+    padding: 16,
+  },
+  SquareScreen_name: {
+    fontSize: 24,
+    fontWeight: 600,
+    marginBottom: 16,
+  },
 });
 
 export default SquareScreen;
