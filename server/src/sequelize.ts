@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes } from 'sequelize';
+import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 
 const DB_USER = 'postgres';
 const DB_PASSWORD = 'thisisfine1';
@@ -42,13 +42,6 @@ export const Square = sequelize.define('square', {
 });
 
 export const Gathering = sequelize.define('gathering', {
-  squareId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Square,
-      key: 'id',
-    },
-  },
   description: {
     type: DataTypes.TEXT,
   },
@@ -65,20 +58,6 @@ export const Gathering = sequelize.define('gathering', {
 });
 
 export const Towner = sequelize.define('towner', {
-  squareId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Square,
-      key: 'id',
-    },
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: User,
-      key: 'id',
-    },
-  },
   name: {
     type: DataTypes.TEXT,
     allowNull: false,
@@ -106,20 +85,6 @@ export const Towner = sequelize.define('towner', {
 });
 
 export const Participant = sequelize.define('participant', {
-  gatheringId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Gathering,
-      key: 'id',
-    },
-  },
-  townerId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Towner,
-      key: 'id',
-    },
-  },
   isModerator: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
@@ -130,6 +95,41 @@ export const Participant = sequelize.define('participant', {
     allowNull: false,
     defaultValue: false,
   },
+});
+
+export const SquareGathering = Square.hasMany(Gathering, {
+  foreignKey: { allowNull: false },
+});
+export const GatheringSquare = Gathering.belongsTo(Square, {
+  foreignKey: { allowNull: false },
+});
+
+export const SquareTowner = Square.hasMany(Towner, {
+  foreignKey: { allowNull: false },
+});
+export const TownerSquare = Towner.belongsTo(Square, {
+  foreignKey: { allowNull: false },
+});
+
+export const GatheringParticipant = Gathering.hasMany(Participant, {
+  foreignKey: { allowNull: false },
+});
+export const ParticipantGathering = Participant.belongsTo(Gathering, {
+  foreignKey: { allowNull: false },
+});
+
+export const TownerParticipant = Towner.hasMany(Participant, {
+  foreignKey: { allowNull: false },
+});
+export const ParticipantTowner = Participant.belongsTo(Towner, {
+  foreignKey: { allowNull: false },
+});
+
+export const UserTowner = User.hasMany(Towner, {
+  foreignKey: { allowNull: false },
+});
+export const TownerUser = Towner.belongsTo(User, {
+  foreignKey: { allowNull: false },
 });
 
 export default sequelize;
