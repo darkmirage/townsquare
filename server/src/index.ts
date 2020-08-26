@@ -58,6 +58,8 @@ app.post('/graphql/getOrCreateUser', async (req, res) => {
   };
   const hasuraToken = await admin.auth().createCustomToken(firebaseId, claims);
 
+  console.log('getOrCreateUser', user);
+
   res.json({ hasuraToken });
 });
 
