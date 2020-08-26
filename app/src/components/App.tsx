@@ -23,9 +23,9 @@ const App = () => {
 
   return (
     <div className={classes.root}>
-      <AuthProvider>
-        <ApolloProvider client={apolloClient}>{routes}</ApolloProvider>
-      </AuthProvider>
+      <ApolloProvider client={apolloClient}>
+        <AuthProvider>{routes}</AuthProvider>
+      </ApolloProvider>
     </div>
   );
 };
