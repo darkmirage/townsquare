@@ -32,24 +32,33 @@ app.post('/graphql/getOrCreateUser', async (req, res) => {
   const { manager } = connection;
 
   let user = await manager.findOne(User, { firebaseId });
-  if (user) {
-    res.json({ id: user.id });
-    return;
+  if (!user) {
+    user = manager.create(User, {
+      firebaseId,
+      email: decodedToken.email,
+    });
+
+    try {
+      await manager.save(user);
+    } catch (error) {
+      res.status(500).json({ error: 'Unable to create user' });
+      return;
+    }
   }
 
-  user = manager.create(User, {
-    firebaseId,
-    email: decodedToken.email,
-  });
+  const defaultClaims = {
+    'x-hasura-default-role': 'user',
+    'x-hasura-allowed-roles': ['user'],
+    'x-hasura-user-id': user.id,
+  };
+  const claims = {
+    'https://hasura.io/jwt/claims': {
+      ...defaultClaims,
+    },
+  };
+  const hasuraToken = await admin.auth().createCustomToken(firebaseId, claims);
 
-  try {
-    await manager.save(user);
-  } catch (error) {
-    res.status(500).json({ error: 'Unable to create user' });
-    return;
-  }
-
-  res.json({ id: user.id });
+  res.json({ hasuraToken });
 });
 
 app.listen(PORT, () => {
