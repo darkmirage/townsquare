@@ -49,18 +49,18 @@ app.post('/graphql/getOrCreateUser', async (req, res) => {
   const defaultClaims = {
     'x-hasura-default-role': 'user',
     'x-hasura-allowed-roles': ['user'],
-    'x-hasura-user-id': user.id,
+    'x-hasura-user-id': `${user.id}`,
   };
   const claims = {
     'https://hasura.io/jwt/claims': {
       ...defaultClaims,
     },
   };
-  const hasuraToken = await admin.auth().createCustomToken(firebaseId, claims);
+  await admin.auth().setCustomUserClaims(firebaseId, claims);
 
   console.log('getOrCreateUser', user);
 
-  res.json({ hasuraToken });
+  res.json({ success: true });
 });
 
 app.listen(PORT, () => {
