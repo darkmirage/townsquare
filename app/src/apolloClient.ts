@@ -3,6 +3,8 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { setContext } from '@apollo/client/link/context';
 
+import { getToken } from 'jwt';
+
 const GRPAHQL_HTTP_URL = 'http://raven-ubuntu:8080/v1/graphql';
 const GRAPHQL_WS_URL = 'ws://raven-ubuntu:8080/v1/graphql';
 
@@ -11,10 +13,7 @@ const httpLink = new HttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  // get the authentication token from local storage if it exists
-  const token = localStorage.getItem('HASURA_TOKEN');
-  // return the headers to the context so httpLink can read them
-
+  const token = getToken();
   const additionalHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
   return {
@@ -31,7 +30,7 @@ const wsLink = new WebSocketLink({
     lazy: true,
     reconnect: true,
     connectionParams: () => {
-      const token = localStorage.getItem('HASURA_TOKEN');
+      const token = getToken();
       return token
         ? {
             headers: {
