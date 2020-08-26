@@ -19,7 +19,9 @@ export default class Participant {
   @JoinColumn()
   towner: Towner;
 
-  @ManyToOne((type) => Gathering, (gathering) => gathering.participants)
+  @ManyToOne((type) => Gathering, (gathering) => gathering.participants, {
+    nullable: true,
+  })
   gathering: Gathering;
 
   @Column({

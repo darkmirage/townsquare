@@ -20,7 +20,9 @@ export default class Gathering {
   @OneToMany((type) => Gathering, (gathering) => gathering.parent)
   children: Gathering[];
 
-  @ManyToOne((type) => Gathering, (gathering) => gathering.children)
+  @ManyToOne((type) => Gathering, (gathering) => gathering.children, {
+    nullable: true,
+  })
   parent: Gathering;
 
   @OneToMany((type) => Participant, (participant) => participant.gathering)

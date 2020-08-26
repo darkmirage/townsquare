@@ -1,12 +1,23 @@
 import * as admin from 'firebase-admin';
-import { Router } from 'express';
+import { Router, Request } from 'express';
 
 import connectionPromise from '../../createConnection';
 import User from '../../entities/User';
+import { getHasuraClaims } from './hasuraUtils';
+
+type GetOrCreateUserRequest = Request<
+  {},
+  {},
+  {
+    input: {
+      firebaseIdToken: string;
+    };
+  }
+>;
 
 const router = Router();
 
-router.post('/getOrCreateUser', async (req, res) => {
+router.post('/getOrCreateUser', async (req: GetOrCreateUserRequest, res) => {
   const { body } = req;
   const { firebaseIdToken } = body.input;
 
@@ -31,16 +42,7 @@ router.post('/getOrCreateUser', async (req, res) => {
     }
   }
 
-  const defaultClaims = {
-    'x-hasura-default-role': 'user',
-    'x-hasura-allowed-roles': ['user'],
-    'x-hasura-user-id': `${user.id}`,
-  };
-  const claims = {
-    'https://hasura.io/jwt/claims': {
-      ...defaultClaims,
-    },
-  };
+  const claims = getHasuraClaims(user.id);
   await admin.auth().setCustomUserClaims(firebaseId, claims);
 
   console.log('getOrCreateUser', user);

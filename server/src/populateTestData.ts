@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
 
 import connectionPromise from './createConnection';
+import Participant from './entities/Participant';
 import Square from './entities/Square';
 import Towner from './entities/Towner';
 import User from './entities/User';
@@ -63,6 +64,16 @@ const TOWNER_NAME = 'Raven Jiang';
   }
   console.log(towner);
 
+  let participant = await entityManager.findOne(Participant, { towner });
+  if (!participant) {
+    participant = entityManager.create(Participant, {
+      isModerator: false,
+      isSpeaking: false,
+      towner,
+    });
+    await entityManager.save(participant);
+  }
+
   const promises = NAMES.map(async (name) => {
     const email = `${name.replace(' ', '.').toLocaleLowerCase()}@stanford.edu`;
     let u = await entityManager.findOne(User, { email });
@@ -88,5 +99,17 @@ const TOWNER_NAME = 'Raven Jiang';
       await entityManager.save(t);
     }
     console.log(t);
+
+    let p = await entityManager.findOne(Participant, { towner: t });
+    if (!p) {
+      p = entityManager.create(Participant, {
+        isModerator: false,
+        isSpeaking: false,
+        towner: t,
+      });
+      await entityManager.save(p);
+    }
   });
+
+  await promises;
 })();
