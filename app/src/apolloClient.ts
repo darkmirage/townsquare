@@ -14,10 +14,13 @@ const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
   const token = localStorage.getItem('HASURA_TOKEN');
   // return the headers to the context so httpLink can read them
+
+  const additionalHeaders = token ? { Authorization: `Bearer ${token}` } : {};
+
   return {
     headers: {
       ...headers,
-      Authorization: token ? `Bearer ${token}` : null,
+      ...additionalHeaders,
     },
   };
 });
@@ -29,11 +32,13 @@ const wsLink = new WebSocketLink({
     reconnect: true,
     connectionParams: () => {
       const token = localStorage.getItem('HASURA_TOKEN');
-      return {
-        headers: {
-          Authorization: token ? `Bearer ${token}` : null,
-        },
-      };
+      return token
+        ? {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        : {};
     },
   },
 });

@@ -6,7 +6,7 @@ import firebase from 'firebaseApp';
 const GET_OR_CREATE_USER = gql`
   mutation GetOrCreateUser($firebaseIdToken: String!) {
     getOrCreateUser(firebaseIdToken: $firebaseIdToken) {
-      hasuraToken
+      success
     }
   }
 `;
@@ -26,6 +26,7 @@ const AuthProvider = (props: React.ComponentPropsWithoutRef<'div'>) => {
     return firebase.auth().onAuthStateChanged(async () => {
       const user = firebase.auth().currentUser;
       if (!user) {
+        localStorage.removeItem('HASURA_TOKEN');
         return;
       }
 
@@ -38,13 +39,18 @@ const AuthProvider = (props: React.ComponentPropsWithoutRef<'div'>) => {
     if (!data) {
       return;
     }
+    const success = data.getOrCreateUser;
+    const user = firebase.auth().currentUser;
+    if (!user || !success) {
+      throw new Error('Login failed');
+    }
 
-    const { hasuraToken } = data.getOrCreateUser;
-    localStorage.setItem('HASURA_TOKEN', hasuraToken);
-
-    setContext({
-      loading: false,
-      user: firebase.auth().currentUser,
+    user.getIdToken(true).then((token) => {
+      localStorage.setItem('HASURA_TOKEN', token);
+      setContext({
+        loading: false,
+        user: firebase.auth().currentUser,
+      });
     });
   }, [data]);
 
