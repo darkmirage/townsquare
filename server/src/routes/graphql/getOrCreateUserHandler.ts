@@ -47,7 +47,7 @@ router.post('/getOrCreateUser', async (req: GetOrCreateUserRequest, res) => {
 
   console.log('getOrCreateUser', user);
 
-  res.json({ success: true });
+  res.json({ success: true, userId: user.id });
 });
 
 export default router;
