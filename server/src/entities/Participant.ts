@@ -21,8 +21,9 @@ export default class Participant {
 
   @ManyToOne((type) => Gathering, (gathering) => gathering.participants, {
     nullable: true,
+    onDelete: 'SET NULL',
   })
-  gathering: Gathering;
+  gathering: Gathering | null;
 
   @Column({
     type: 'boolean',

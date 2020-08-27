@@ -1,5 +1,6 @@
 import { Router, Request } from 'express';
 
+import { setGathering, getTownerForUser } from './entityUtils';
 import { getHasuraIdandRole } from './hasuraUtils';
 import connectionPromise from '../../createConnection';
 import Gathering from '../../entities/Gathering';
@@ -25,6 +26,11 @@ router.post('/joinTowner', async (req: JoinTownerRequest, res) => {
 
   console.log('/joinTowner', townerId, id);
 
+  if (!id) {
+    res.status(500).json({ success: false });
+    return;
+  }
+
   connection.transaction(async (manager) => {
     const t2 = await manager
       .getRepository(Towner)
@@ -41,15 +47,7 @@ router.post('/joinTowner', async (req: JoinTownerRequest, res) => {
     }
     const squareId = t2.square.id;
 
-    const t1 = await manager
-      .getRepository(Towner)
-      .createQueryBuilder('towner')
-      .leftJoinAndSelect('towner.square', 'square')
-      .leftJoinAndSelect('towner.participant', 'participant')
-      .leftJoinAndSelect('participant.gathering', 'gathering')
-      .where('towner.user_id = :userId', { userId: id })
-      .andWhere('square.id = :squareId', { squareId })
-      .getOne();
+    const t1 = await getTownerForUser(manager, squareId, id);
 
     if (!t1) {
       res.status(500).json({ success: false });
@@ -74,8 +72,7 @@ router.post('/joinTowner', async (req: JoinTownerRequest, res) => {
       await manager.save(t2.participant);
     }
 
-    t1.participant.gathering = gathering;
-    await manager.save(t1.participant);
+    await setGathering(manager, t1.participant, gathering);
 
     res.json({ success: true, gatheringId: gathering.id });
   });
