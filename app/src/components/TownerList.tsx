@@ -12,7 +12,7 @@ const TownerList = (props: Props) => {
   const { towners } = props.square;
   const classes = useStyles();
   const elems = towners.map((towner: any) => (
-    <TownerBox key={towner.id} towner={towner} />
+    <TownerBox key={towner.id} towner={towner} clickable />
   ));
 
   return <div className={classes.TownerList}>{elems}</div>;
@@ -29,7 +29,10 @@ const useStyles = createUseStyles({
 TownerList.fragments = {
   square: gql`
     fragment TownerListSquare on square {
-      towners(where: { participant: { gathering_id: { _is_null: true } } }) {
+      towners(
+        order_by: { is_online: desc, name: asc }
+        where: { participant: { gathering_id: { _is_null: true } } }
+      ) {
         id
         ...TownerBoxTowner
       }

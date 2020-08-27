@@ -33,6 +33,8 @@ const useStyles = createUseStyles({
     borderRadius: 12,
     display: 'flex',
     padding: 8,
+    marginBottom: 12,
+    marginRight: 12,
     maxWidth: 200,
   },
   GatheringBox_label: {
@@ -47,7 +49,7 @@ GatheringBox.fragments = {
       description
       is_invite_only
       is_resident_only
-      participants {
+      participants(order_by: { towner: { name: asc } }) {
         towner {
           id
           ...TownerBoxTowner

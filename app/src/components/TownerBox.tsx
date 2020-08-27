@@ -1,30 +1,69 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
-import { gql } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
+import classNames from 'classnames';
 
 import { getInitials } from 'utils';
 
+const JOIN_TOWNER = gql`
+  mutation JoinTowner($townerId: Int!) {
+    joinTowner(townerId: $townerId) {
+      success
+      gatheringId
+    }
+  }
+`;
+
 type Props = {
-  towner: { name: string };
+  towner: { name: string; id: number; is_online: boolean };
+  clickable: boolean;
 };
 
 const TownerBox = (props: Props) => {
   const classes = useStyles();
-  const { name } = props.towner;
+  const { towner, clickable } = props;
+  const { name, is_online: isOnline } = towner;
+  const [joinTowner, { loading }] = useMutation(JOIN_TOWNER);
+
+  const active = clickable && isOnline;
+
   const initials = getInitials(name);
 
+  const handleClick = React.useCallback(() => {
+    joinTowner({ variables: { townerId: towner.id } });
+  }, [towner, joinTowner]);
+
   return (
-    <div className={classes.TownerBox}>
+    <div
+      className={classNames(classes.TownerBox, {
+        [classes.TownerBox_clickable]: active,
+      })}
+      role={active ? 'button' : undefined}
+      onClick={active ? handleClick : undefined}
+    >
+      <div
+        className={classNames(classes.TownerBox_indicator, {
+          [classes.TownerBox_indicator_online]: isOnline,
+        })}
+      ></div>
       <div className={classes.TownerBox_avatar}>{initials}</div>
       <div className={classes.TownerBox_label}>{name}</div>
     </div>
   );
 };
 
+TownerBox.defaultProps = {
+  clickable: false,
+};
+
 const useStyles = createUseStyles({
   TownerBox: {
     margin: 8,
+    position: 'relative',
     width: 64,
+  },
+  TownerBox_clickable: {
+    cursor: 'pointer',
   },
   TownerBox_avatar: {
     alignItems: 'center',
@@ -44,6 +83,21 @@ const useStyles = createUseStyles({
     fontSize: 14,
     marginTop: 4,
     textAlign: 'center',
+  },
+  TownerBox_indicator: {
+    background: '#0f0',
+    borderRadius: 8,
+    height: 16,
+    opacity: 0,
+    pointerEvent: 'none',
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    transition: '200ms',
+    width: 16,
+  },
+  TownerBox_indicator_online: {
+    opacity: 1,
   },
 });
 
