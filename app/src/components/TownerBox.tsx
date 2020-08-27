@@ -17,15 +17,16 @@ const JOIN_TOWNER = gql`
 type Props = {
   towner: { name: string; id: number; is_online: boolean };
   clickable: boolean;
+  isUser: boolean;
 };
 
 const TownerBox = (props: Props) => {
   const classes = useStyles();
-  const { towner, clickable } = props;
+  const { towner, clickable, isUser } = props;
   const { name, is_online: isOnline } = towner;
   const [joinTowner, { loading }] = useMutation(JOIN_TOWNER);
 
-  const active = clickable && isOnline;
+  const active = clickable && isOnline && !isUser;
 
   const initials = getInitials(name);
 
@@ -37,6 +38,7 @@ const TownerBox = (props: Props) => {
     <div
       className={classNames(classes.TownerBox, {
         [classes.TownerBox_clickable]: active,
+        [classes.TownerBox_user]: isUser,
       })}
       role={active ? 'button' : undefined}
       onClick={active ? handleClick : undefined}
@@ -54,6 +56,7 @@ const TownerBox = (props: Props) => {
 
 TownerBox.defaultProps = {
   clickable: false,
+  isUser: false,
 };
 
 const useStyles = createUseStyles({
@@ -61,6 +64,14 @@ const useStyles = createUseStyles({
     margin: 8,
     position: 'relative',
     width: 64,
+  },
+  TownerBox_user: {
+    '& $TownerBox_avatar': {
+      backgroundColor: '#333',
+    },
+    '& $TownerBox_label': {
+      fontWeight: 'bold',
+    },
   },
   TownerBox_clickable: {
     cursor: 'pointer',

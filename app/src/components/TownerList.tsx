@@ -2,6 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql } from '@apollo/client';
 
+import { AuthContext } from './AuthProvider';
 import TownerBox from './TownerBox';
 
 type Props = {
@@ -9,10 +10,16 @@ type Props = {
 };
 
 const TownerList = (props: Props) => {
+  const { userId } = React.useContext(AuthContext);
   const { towners } = props.square;
   const classes = useStyles();
   const elems = towners.map((towner: any) => (
-    <TownerBox key={towner.id} towner={towner} clickable />
+    <TownerBox
+      key={towner.id}
+      towner={towner}
+      clickable
+      isUser={userId === towner.user_id}
+    />
   ));
 
   return <div className={classes.TownerList}>{elems}</div>;
@@ -34,6 +41,7 @@ TownerList.fragments = {
         where: { participant: { gathering_id: { _is_null: true } } }
       ) {
         id
+        user_id
         ...TownerBoxTowner
       }
     }

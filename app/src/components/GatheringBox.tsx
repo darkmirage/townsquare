@@ -2,6 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql } from '@apollo/client';
 
+import { AuthContext } from './AuthProvider';
 import TownerBox from './TownerBox';
 
 type Props = {
@@ -14,9 +15,14 @@ type Props = {
 const GatheringBox = (props: Props) => {
   const classes = useStyles();
   const { description, participants } = props.gathering;
+  const { userId } = React.useContext(AuthContext);
 
   const towners = participants.map((p) => (
-    <TownerBox key={p.towner.id} towner={p.towner} />
+    <TownerBox
+      key={p.towner.id}
+      towner={p.towner}
+      isUser={userId === p.towner.user_id}
+    />
   ));
 
   return (
@@ -34,7 +40,7 @@ const useStyles = createUseStyles({
     display: 'flex',
     padding: 8,
     marginBottom: 12,
-    marginRight: 12,
+    marginRight: 24,
     maxWidth: 200,
   },
   GatheringBox_label: {
@@ -52,6 +58,7 @@ GatheringBox.fragments = {
       participants(order_by: { towner: { name: asc } }) {
         towner {
           id
+          user_id
           ...TownerBoxTowner
         }
       }
