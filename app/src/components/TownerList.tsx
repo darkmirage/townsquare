@@ -29,7 +29,7 @@ const useStyles = createUseStyles({
 TownerList.fragments = {
   square: gql`
     fragment TownerListSquare on square {
-      towners {
+      towners(where: { participant: { gathering_id: { _is_null: true } } }) {
         id
         ...TownerBoxTowner
       }

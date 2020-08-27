@@ -11,4 +11,3 @@ export function getToken(): string | null {
   refreshToken();
   return cachedToken;
 }
-

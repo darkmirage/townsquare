@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { createUseStyles } from 'react-jss';
 import { gql, useSubscription } from '@apollo/client';
 
+import GatheringList from './GatheringList';
 import TownerList from './TownerList';
 
 const GET_SQUARE = gql`
@@ -12,10 +13,12 @@ const GET_SQUARE = gql`
       name
       domain
       ...TownerListSquare
+      ...GatheringListSquare
     }
   }
 
   ${TownerList.fragments.square}
+  ${GatheringList.fragments.square}
 `;
 
 const SquareScreen = (
@@ -35,6 +38,7 @@ const SquareScreen = (
   return (
     <div className={classes.SquareScreen}>
       <div className={classes.SquareScreen_name}>{square.name}</div>
+      <GatheringList square={square} />
       <TownerList square={square} />
     </div>
   );
