@@ -4,6 +4,7 @@ import { gql, useMutation } from '@apollo/client';
 import classNames from 'classnames';
 
 import { getInitials } from 'utils';
+import Spinner from './Spinner';
 
 const JOIN_TOWNER = gql`
   mutation JoinTowner($townerId: Int!) {
@@ -26,7 +27,7 @@ const TownerBox = (props: Props) => {
   const { name, is_online: isOnline } = towner;
   const [joinTowner, { loading }] = useMutation(JOIN_TOWNER);
 
-  const active = clickable && isOnline && !isUser;
+  const active = clickable && isOnline && !isUser && !loading;
 
   const initials = getInitials(name);
 
@@ -43,13 +44,20 @@ const TownerBox = (props: Props) => {
       role={active ? 'button' : undefined}
       onClick={active ? handleClick : undefined}
     >
-      <div
-        className={classNames(classes.TownerBox_indicator, {
-          [classes.TownerBox_indicator_online]: isOnline,
-        })}
-      ></div>
       <div className={classes.TownerBox_avatar}>{initials}</div>
       <div className={classes.TownerBox_label}>{name}</div>
+      <div className={classes.TownerBox_overlay}>
+        <Spinner
+          className={classNames(classes.TownerBox_spinner, {
+            [classes.TownerBox_visible]: loading,
+          })}
+        />
+      </div>
+      <div
+        className={classNames(classes.TownerBox_indicator, {
+          [classes.TownerBox_visible]: isOnline,
+        })}
+      ></div>
     </div>
   );
 };
@@ -107,8 +115,22 @@ const useStyles = createUseStyles({
     transition: '200ms',
     width: 16,
   },
-  TownerBox_indicator_online: {
+  TownerBox_visible: {
     opacity: 1,
+  },
+  TownerBox_overlay: {
+    alignItems: 'center',
+    display: 'flex',
+    height: 64,
+    justifyContent: 'center',
+    pointerEvent: 'none',
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: 64,
+  },
+  TownerBox_spinner: {
+    opacity: 0,
   },
 });
 

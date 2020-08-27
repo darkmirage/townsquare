@@ -1,13 +1,16 @@
 import React from 'react';
+import classNames from 'classnames';
+
 import './Spinner.css';
 
-const Spinner = () => {
+const Spinner = (props: React.ComponentPropsWithoutRef<'div'>) => {
+  const className = classNames('lds-ring', props.className);
   return (
-    <div className="sk-folding-cube">
-      <div className="sk-cube1 sk-cube"></div>
-      <div className="sk-cube2 sk-cube"></div>
-      <div className="sk-cube4 sk-cube"></div>
-      <div className="sk-cube3 sk-cube"></div>
+    <div className={className}>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
     </div>
   );
 };

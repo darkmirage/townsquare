@@ -54,7 +54,7 @@ const AuthProvider = (props: React.ComponentPropsWithoutRef<'div'>) => {
     }
 
     refreshToken(true).then(() => {
-      setContext({ ...context, loading: false, user, userId });
+      setContext({ loading: false, user, userId });
     });
   }, [data]);
 
