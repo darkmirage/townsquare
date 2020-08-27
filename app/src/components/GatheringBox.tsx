@@ -98,6 +98,7 @@ GatheringBox.fragments = {
       is_invite_only
       is_resident_only
       participants(order_by: { towner: { name: asc } }) {
+        id
         towner {
           id
           user_id
