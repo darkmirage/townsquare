@@ -23,6 +23,8 @@ router.post('/joinTowner', async (req: JoinTownerRequest, res) => {
   const { id } = getHasuraIdandRole(req);
   const connection = await connectionPromise;
 
+  console.log('/joinTowner', townerId, id);
+
   connection.transaction(async (manager) => {
     const t2 = await manager
       .getRepository(Towner)
