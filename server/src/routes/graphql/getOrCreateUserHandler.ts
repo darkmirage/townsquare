@@ -27,6 +27,7 @@ router.post('/getOrCreateUser', async (req: GetOrCreateUserRequest, res) => {
   const connection = await connectionPromise;
   const { manager } = connection;
 
+  let created = false;
   let user = await manager.findOne(User, { firebaseId });
   if (!user) {
     user = manager.create(User, {
@@ -36,16 +37,18 @@ router.post('/getOrCreateUser', async (req: GetOrCreateUserRequest, res) => {
 
     try {
       await manager.save(user);
+      created = true;
     } catch (error) {
+      console.error('/getOrCreateUser');
       res.status(500).json({ error: 'Unable to create user' });
       return;
     }
   }
 
+  console.log('/getOrCreateUser', user.id, created);
+
   const claims = getHasuraClaims(user.id);
   await admin.auth().setCustomUserClaims(firebaseId, claims);
-
-  console.log('getOrCreateUser', user);
 
   res.json({ success: true, userId: user.id });
 });
