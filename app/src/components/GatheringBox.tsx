@@ -1,50 +1,92 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
-import { gql } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 
 import { AuthContext } from './AuthProvider';
 import TownerBox from './TownerBox';
+import Button from './Button';
 
 type Props = {
   gathering: {
+    id: number;
     description: string;
     participants: any[];
   };
 };
 
+const JOIN_GATHERING = gql`
+  mutation JoinGathering($gatheringId: Int!, $leave: Boolean!) {
+    joinGathering(gatheringId: $gatheringId, leave: $leave) {
+      success
+    }
+  }
+`;
+
 const GatheringBox = (props: Props) => {
   const classes = useStyles();
-  const { description, participants } = props.gathering;
+  const { description, participants, id } = props.gathering;
   const { userId } = React.useContext(AuthContext);
+  const [joinGathering, { loading }] = useMutation(JOIN_GATHERING);
 
-  const towners = participants.map((p) => (
-    <TownerBox
-      key={p.towner.id}
-      towner={p.towner}
-      isUser={userId === p.towner.user_id}
-    />
-  ));
+  let isActive = false;
+
+  const towners = participants.map((p) => {
+    const isUser = userId === p.towner.user_id;
+    if (isUser) {
+      isActive = true;
+    }
+
+    return <TownerBox key={p.towner.id} towner={p.towner} isUser={isUser} />;
+  });
+
+  const handleClick = React.useCallback(() => {
+    joinGathering({ variables: { gatheringId: id, leave: isActive } });
+  }, [joinGathering, isActive, id]);
 
   return (
     <div className={classes.GatheringBox}>
       <div className={classes.GatheringBox_label}>{description}</div>
       {towners}
+      <div className={classes.GatheringBox_menu}>
+        <Button onClick={handleClick} loading={loading}>
+          {isActive ? 'Leave' : 'Join'}
+        </Button>
+      </div>
     </div>
   );
 };
 
 const useStyles = createUseStyles({
   GatheringBox: {
-    border: '4px solid #777',
+    border: '4px solid rgba(0, 0, 0, 0.1)',
     borderRadius: 12,
     display: 'flex',
+    flexWrap: 'wrap',
     padding: 8,
     marginBottom: 12,
     marginRight: 24,
-    maxWidth: 200,
+    maxWidth: 240,
+    position: 'relative',
+    transition: '200ms',
+    '&:hover': {
+      background: '#eee',
+      '& $GatheringBox_menu': {
+        opacity: 1.0,
+      },
+    },
   },
   GatheringBox_label: {
     fontSize: 14,
+    position: 'absolute',
+    top: 0,
+  },
+  GatheringBox_menu: {
+    bottom: 0,
+    opacity: 0,
+    position: 'absolute',
+    right: 0,
+    transform: 'translate(-8px, 12px)',
+    transition: '200ms',
   },
 });
 

@@ -20,6 +20,7 @@ const GatheringList = (props: Props) => {
 
 const useStyles = createUseStyles({
   GatheringList: {
+    alignItems: 'flex-start',
     display: 'flex',
     flexWrap: 'wrap',
     marginBottom: 12,
