@@ -22,7 +22,7 @@
     "react-dom": "^16.13.1",
     "react-jss": "^10.3.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^3.4.3",
     "subscriptions-transport-ws": "^0.9.17",
     "typescript": "^3.7.5"
   },
