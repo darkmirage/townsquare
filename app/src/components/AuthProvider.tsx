@@ -3,6 +3,7 @@ import { gql, useMutation } from '@apollo/client';
 
 import firebase from 'firebaseApp';
 import { refreshToken } from 'jwt';
+import Spinner from './Spinner';
 
 const GET_OR_CREATE_USER = gql`
   mutation GetOrCreateUser($firebaseIdToken: String!) {
@@ -29,7 +30,7 @@ export const AuthContext = React.createContext<AuthContextType>(defaultContext);
 
 const AuthProvider = (props: React.ComponentPropsWithoutRef<'div'>) => {
   const [context, setContext] = React.useState(defaultContext);
-  const [getOrCreateUser, { data }] = useMutation(GET_OR_CREATE_USER);
+  const [getOrCreateUser, { data, loading }] = useMutation(GET_OR_CREATE_USER);
 
   React.useEffect(() => {
     return firebase.auth().onAuthStateChanged(async () => {
@@ -60,7 +61,7 @@ const AuthProvider = (props: React.ComponentPropsWithoutRef<'div'>) => {
 
   return (
     <AuthContext.Provider value={context}>
-      {props.children}
+      {loading ? <Spinner /> : props.children}
     </AuthContext.Provider>
   );
 };
