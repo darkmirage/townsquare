@@ -2,7 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql } from '@apollo/client';
 
-import { AuthContext } from './AuthProvider';
+import { TownerContext } from './TownerProvider';
 import TownerBox from './TownerBox';
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 };
 
 const TownerList = (props: Props) => {
-  const { userId } = React.useContext(AuthContext);
+  const { townerId } = React.useContext(TownerContext);
   const { towners } = props.square;
   const classes = useStyles();
   const elems = towners.map((towner: any) => (
@@ -18,7 +18,7 @@ const TownerList = (props: Props) => {
       key={towner.id}
       towner={towner}
       clickable
-      isUser={userId === towner.user_id}
+      isUser={townerId === towner.id}
     />
   ));
 

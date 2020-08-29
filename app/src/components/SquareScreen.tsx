@@ -6,6 +6,7 @@ import { gql, useSubscription } from '@apollo/client';
 import GatheringList from './GatheringList';
 import TownerList from './TownerList';
 import Spinner from './Spinner';
+import TownerProvider from './TownerProvider';
 
 const GET_SQUARE = gql`
   subscription GetSquare($domain: String!) {
@@ -37,11 +38,13 @@ const SquareScreen = (
   const square = data.square[0];
 
   return (
-    <div className={classes.SquareScreen}>
-      <div className={classes.SquareScreen_name}>{square.name}</div>
-      <GatheringList square={square} />
-      <TownerList square={square} />
-    </div>
+    <TownerProvider domain={domain}>
+      <div className={classes.SquareScreen}>
+        <div className={classes.SquareScreen_name}>{square.name}</div>
+        <GatheringList square={square} />
+        <TownerList square={square} />
+      </div>
+    </TownerProvider>
   );
 };
 

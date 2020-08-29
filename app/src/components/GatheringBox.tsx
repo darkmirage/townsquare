@@ -2,7 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql, useMutation } from '@apollo/client';
 
-import { AuthContext } from './AuthProvider';
+import { TownerContext } from './TownerProvider';
 import TownerBox from './TownerBox';
 import Button from './Button';
 
@@ -25,13 +25,13 @@ const JOIN_GATHERING = gql`
 const GatheringBox = (props: Props) => {
   const classes = useStyles();
   const { description, participants, id } = props.gathering;
-  const { userId } = React.useContext(AuthContext);
+  const { townerId } = React.useContext(TownerContext);
   const [joinGathering, { loading }] = useMutation(JOIN_GATHERING);
 
   let isActive = false;
 
   const towners = participants.map((p) => {
-    const isUser = userId === p.towner.user_id;
+    const isUser = townerId === p.towner.id;
     if (isUser) {
       isActive = true;
     }
