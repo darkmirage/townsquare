@@ -6,9 +6,8 @@ type Props = React.ComponentPropsWithoutRef<'div'> & {
   loading: boolean;
 };
 
-const Button = ({ loading = false, ...props }: Props) => {
+const Button = ({ loading = false, className, children, ...rest }: Props) => {
   const classes = useStyles();
-  const { className, children, ...rest } = props;
 
   return (
     <div
@@ -23,7 +22,7 @@ const Button = ({ loading = false, ...props }: Props) => {
 
 const useStyles = createUseStyles({
   Button: {
-    background: '#a82a2a',
+    background: '#808080',
     borderRadius: 4,
     color: '#fff',
     cursor: 'pointer',

@@ -1,6 +1,8 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql, useMutation } from '@apollo/client';
+import { motion } from 'framer-motion';
+import classNames from 'classnames';
 
 import { TownerContext } from './TownerProvider';
 import TownerBox from './TownerBox';
@@ -43,8 +45,17 @@ const GatheringBox = (props: Props) => {
     joinGathering({ variables: { gatheringId: id, leave: isActive } });
   }, [joinGathering, isActive, id]);
 
+  const spinner = loading ? (
+    <motion.div className={classes.GatheringBox_loader}></motion.div>
+  ) : null;
+
   return (
-    <div className={classes.GatheringBox}>
+    <motion.div
+      layoutId={`gathering-${id}`}
+      className={classNames(classes.GatheringBox, {
+        [classes.GatheringBox_active]: isActive,
+      })}
+    >
       <div className={classes.GatheringBox_label}>{description}</div>
       {towners}
       <div className={classes.GatheringBox_menu}>
@@ -52,7 +63,8 @@ const GatheringBox = (props: Props) => {
           {isActive ? 'Leave' : 'Join'}
         </Button>
       </div>
-    </div>
+      {spinner}
+    </motion.div>
   );
 };
 
@@ -75,6 +87,23 @@ const useStyles = createUseStyles({
       },
     },
   },
+  GatheringBox_active: {
+    border: '4px solid rgba(0, 176, 255, 0.5)',
+    '&:hover': {
+      background: 'rgba(0, 176, 255, 0.1)',
+    },
+  },
+  GatheringBox_loader: {
+    alignItems: 'center',
+    background: 'rgba(0, 0, 0, 0.1)',
+    bottom: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   GatheringBox_label: {
     fontSize: 14,
     position: 'absolute',
@@ -85,7 +114,7 @@ const useStyles = createUseStyles({
     opacity: 0,
     position: 'absolute',
     right: 0,
-    transform: 'translate(-8px, 12px)',
+    transform: 'translate(-8px, 16px)',
     transition: '200ms',
   },
 });

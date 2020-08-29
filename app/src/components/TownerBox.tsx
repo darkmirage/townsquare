@@ -119,6 +119,10 @@ const useStyles = createUseStyles({
     transition: '200ms',
     width: 16,
   },
+  TownerBox_spinner: {
+    opacity: 0,
+    transition: '200ms',
+  },
   TownerBox_visible: {
     opacity: 1,
   },
@@ -132,9 +136,6 @@ const useStyles = createUseStyles({
     right: 0,
     top: 0,
     width: 64,
-  },
-  TownerBox_spinner: {
-    opacity: 0,
   },
 });
 
