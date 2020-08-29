@@ -1,0 +1,26 @@
+import React from 'react';
+import AgoraRTC from 'agora-rtc-sdk-ng';
+
+type Props = {
+  token: string;
+  channel: string;
+  uid: string;
+};
+
+const AGORA_APP_ID = 'b4b2d6ff48ca4022a3259a1f99cac9c5';
+
+const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+
+const AgoraChannel = (props: Props) => {
+  const { token, channel, uid } = props;
+
+  React.useEffect(() => {
+    (async () => {
+      await client.join(AGORA_APP_ID, channel, token, uid);
+    })();
+  }, [channel, token, uid]);
+
+  return null;
+};
+
+export default AgoraChannel;

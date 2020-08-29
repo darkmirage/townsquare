@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { createUseStyles } from 'react-jss';
 import { gql, useSubscription } from '@apollo/client';
 
+import ActiveGathering from './ActiveGathering';
 import GatheringList from './GatheringList';
 import TownerList from './TownerList';
 import Spinner from './Spinner';
@@ -41,6 +42,7 @@ const SquareScreen = (
     <TownerProvider domain={domain}>
       <div className={classes.SquareScreen}>
         <div className={classes.SquareScreen_name}>{square.name}</div>
+        <ActiveGathering />
         <GatheringList square={square} />
         <TownerList square={square} />
       </div>
