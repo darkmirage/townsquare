@@ -44,4 +44,11 @@ export default class Gathering {
     default: true,
   })
   isResidentOnly: boolean;
+
+  @Column({
+    type: 'text',
+    unique: true,
+    nullable: false,
+  })
+  channel: string;
 }

@@ -1,6 +1,9 @@
 import { EntityManager } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+
 import Gathering from '../../entities/Gathering';
 import Participant from '../../entities/Participant';
+import Square from '../../entities/Square';
 import Towner from '../../entities/Towner';
 
 export async function setGathering(
@@ -62,4 +65,17 @@ export async function joinGathering(
 
   await setGathering(manager, towner.participant, leave ? null : gathering);
   return true;
+}
+
+export async function createGathering(manager: EntityManager, square: Square) {
+  const gathering = manager.create(Gathering, {
+    square: square,
+    isInviteOnly: false,
+    isResidentOnly: false,
+    description: '',
+    channel: uuid(),
+  });
+
+  await manager.save(gathering);
+  return gathering;
 }

@@ -1,9 +1,8 @@
 import { Router, Request } from 'express';
 
-import { setGathering, getTownerForUser } from './entityUtils';
+import { createGathering, setGathering, getTownerForUser } from './entityUtils';
 import { getHasuraIdandRole } from './hasuraUtils';
 import connectionPromise from '../../createConnection';
-import Gathering from '../../entities/Gathering';
 import Towner from '../../entities/Towner';
 
 const router = Router();
@@ -61,13 +60,7 @@ router.post('/joinTowner', async (req: JoinTownerRequest, res) => {
 
     let { gathering } = t2.participant;
     if (!gathering) {
-      gathering = manager.create(Gathering, {
-        square: t2.square,
-        isInviteOnly: false,
-        isResidentOnly: false,
-        description: '',
-      });
-      await manager.save(gathering);
+      gathering = await createGathering(manager, t2.square);
       t2.participant.gathering = gathering;
       await manager.save(t2.participant);
     }
