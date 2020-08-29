@@ -89,6 +89,7 @@ const useStyles = createUseStyles({
   },
   GatheringBox_active: {
     border: '4px solid rgba(0, 176, 255, 0.5)',
+    padding: 24,
     '&:hover': {
       background: 'rgba(0, 176, 255, 0.1)',
     },

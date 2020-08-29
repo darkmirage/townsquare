@@ -30,12 +30,13 @@ const GET_AGORA_TOKEN = gql`
 
 const ActiveGathering = () => {
   const { townerId } = React.useContext(TownerContext);
-  const { data } = useSubscription(GET_ACTIVE_GATHERING, {
+  const { data, loading } = useSubscription(GET_ACTIVE_GATHERING, {
     variables: { townerId },
   });
-  const [getAgoraToken, { data: tokenData, refetch }] = useLazyQuery(
-    GET_AGORA_TOKEN
-  );
+  const [
+    getAgoraToken,
+    { data: tokenData, refetch, loading: tokenLoading },
+  ] = useLazyQuery(GET_AGORA_TOKEN);
 
   React.useEffect(() => {
     if (data) {
@@ -45,10 +46,14 @@ const ActiveGathering = () => {
   }, [data, getAgoraToken, refetch]);
 
   const channel = data
-    ? (data.participant[0].gathering.channel as string)
+    ? (data.participant[0].gathering?.channel as string)
     : null;
   const userId = data ? (data.participant[0].towner.user_id as string) : null;
   const token = tokenData ? (tokenData.agora.token as string) : null;
+
+  if (loading || tokenLoading) {
+    return null;
+  }
 
   return channel && token && userId ? (
     <AgoraChannel channel={channel} token={token} uid={`user-${userId}`} />
