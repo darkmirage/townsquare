@@ -2,6 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql, useMutation } from '@apollo/client';
 import classNames from 'classnames';
+import { motion } from 'framer-motion';
 
 import { getInitials } from 'utils';
 import Spinner from './Spinner';
@@ -36,7 +37,10 @@ const TownerBox = (props: Props) => {
   }, [towner, joinTowner]);
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      layoutId={`towner-${towner.id}`}
       className={classNames(classes.TownerBox, {
         [classes.TownerBox_clickable]: active,
         [classes.TownerBox_user]: isUser,
@@ -58,7 +62,7 @@ const TownerBox = (props: Props) => {
           [classes.TownerBox_visible]: isOnline,
         })}
       ></div>
-    </div>
+    </motion.div>
   );
 };
 

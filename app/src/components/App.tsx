@@ -2,6 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
+import { AnimateSharedLayout } from 'framer-motion';
 
 import AuthProvider from './AuthProvider';
 import PrivateRoute from './PrivateRoute';
@@ -23,9 +24,11 @@ const App = () => {
 
   return (
     <div className={classes.root}>
-      <ApolloProvider client={apolloClient}>
-        <AuthProvider>{routes}</AuthProvider>
-      </ApolloProvider>
+      <AnimateSharedLayout>
+        <ApolloProvider client={apolloClient}>
+          <AuthProvider>{routes}</AuthProvider>
+        </ApolloProvider>
+      </AnimateSharedLayout>
     </div>
   );
 };
