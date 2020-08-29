@@ -1,11 +1,13 @@
 import { Router } from 'express';
 
+import getOrCreateTownerHandler from './getOrCreateTownerHandler';
 import getOrCreateUserHandler from './getOrCreateUserHandler';
 import joinGatheringHandler from './joinGatheringHandler';
 import joinTownerHandler from './joinTownerHandler';
 
 const router = Router();
 
+router.use('/', getOrCreateTownerHandler);
 router.use('/', getOrCreateUserHandler);
 router.use('/', joinGatheringHandler);
 router.use('/', joinTownerHandler);
