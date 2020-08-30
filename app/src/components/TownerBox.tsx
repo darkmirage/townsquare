@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 
 import { getInitials } from 'utils';
 import Spinner from './Spinner';
+import AgoraSpeaker from './AgoraSpeaker';
 
 const JOIN_TOWNER = gql`
   mutation JoinTowner($townerId: Int!) {
@@ -17,7 +18,7 @@ const JOIN_TOWNER = gql`
 `;
 
 type Props = {
-  towner: { name: string; id: number; is_online: boolean };
+  towner: { name: string; id: number; is_online: boolean; user_id: number };
   clickable: boolean;
   isUser: boolean;
 };
@@ -25,7 +26,7 @@ type Props = {
 const TownerBox = (props: Props) => {
   const classes = useStyles();
   const { towner, clickable, isUser } = props;
-  const { name, is_online: isOnline } = towner;
+  const { name, is_online: isOnline, user_id: userId } = towner;
   const [joinTowner, { loading }] = useMutation(JOIN_TOWNER);
 
   const active = clickable && isOnline && !isUser && !loading;
@@ -49,6 +50,7 @@ const TownerBox = (props: Props) => {
       onClick={active ? handleClick : undefined}
     >
       <div className={classes.TownerBox_avatar}>{initials}</div>
+      <AgoraSpeaker uid={`user-${userId}`} />
       <div className={classes.TownerBox_label}>{name}</div>
       <div className={classes.TownerBox_overlay}>
         <Spinner
@@ -146,6 +148,7 @@ TownerBox.fragments = {
       name
       is_online
       is_visitor
+      user_id
     }
   `,
 };

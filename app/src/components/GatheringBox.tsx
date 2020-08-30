@@ -1,7 +1,6 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql, useMutation } from '@apollo/client';
-import { motion } from 'framer-motion';
 import classNames from 'classnames';
 
 import { AgoraContext } from './AgoraProvider';
