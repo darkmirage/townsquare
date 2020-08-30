@@ -1,0 +1,7 @@
+hasura.townsquare.chat {
+  reverse_proxy localhost:8080
+}
+
+server.townsquare.chat {
+  reverse_proxy localhost:3000
+}
