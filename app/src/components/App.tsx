@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import { AnimateSharedLayout } from 'framer-motion';
 
+import AgoraProvider from './AgoraProvider';
 import AuthProvider from './AuthProvider';
 import PrivateRoute from './PrivateRoute';
 import SignInScreen from './SignInScreen';
@@ -25,9 +26,11 @@ const App = () => {
   return (
     <div className={classes.root}>
       <AnimateSharedLayout>
-        <ApolloProvider client={apolloClient}>
-          <AuthProvider>{routes}</AuthProvider>
-        </ApolloProvider>
+        <AgoraProvider>
+          <ApolloProvider client={apolloClient}>
+            <AuthProvider>{routes}</AuthProvider>
+          </ApolloProvider>
+        </AgoraProvider>
       </AnimateSharedLayout>
     </div>
   );

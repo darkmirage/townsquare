@@ -4,9 +4,11 @@ import { gql, useMutation } from '@apollo/client';
 import { motion } from 'framer-motion';
 import classNames from 'classnames';
 
+import { AgoraContext } from './AgoraProvider';
 import { TownerContext } from './TownerProvider';
 import TownerBox from './TownerBox';
 import Button from './Button';
+import { ConnectionState } from 'agora-rtc-sdk-ng';
 
 type Props = {
   gathering: {
@@ -24,11 +26,32 @@ const JOIN_GATHERING = gql`
   }
 `;
 
+function getColor(connectionState: ConnectionState): string {
+  let borderColor = '0, 0, 0';
+  switch (connectionState) {
+    case 'CONNECTED':
+      borderColor = '0, 176, 255';
+      break;
+    case 'RECONNECTING':
+    case 'CONNECTING':
+      borderColor = '127, 127, 127';
+      break;
+    case 'DISCONNECTED':
+    case 'DISCONNECTING':
+      borderColor = '255, 81, 0';
+      break;
+    default:
+      break;
+  }
+  return borderColor;
+}
+
 const GatheringBox = (props: Props) => {
-  const classes = useStyles();
   const { description, participants, id } = props.gathering;
   const { townerId } = React.useContext(TownerContext);
+  const { connectionState } = React.useContext(AgoraContext);
   const [joinGathering, { loading }] = useMutation(JOIN_GATHERING);
+  const classes = useStyles({ connectionState });
 
   let isActive = false;
 
@@ -46,16 +69,20 @@ const GatheringBox = (props: Props) => {
   }, [joinGathering, isActive, id]);
 
   const spinner = loading ? (
-    <motion.div className={classes.GatheringBox_loader}></motion.div>
+    <div className={classes.GatheringBox_loader}></div>
+  ) : null;
+
+  const connnectionState = isActive ? (
+    <div className={classes.GatheringBox_status}>{connectionState}</div>
   ) : null;
 
   return (
-    <motion.div
-      layoutId={`gathering-${id}`}
+    <div
       className={classNames(classes.GatheringBox, {
         [classes.GatheringBox_active]: isActive,
       })}
     >
+      {connnectionState}
       <div className={classes.GatheringBox_label}>{description}</div>
       {towners}
       <div className={classes.GatheringBox_menu}>
@@ -64,7 +91,7 @@ const GatheringBox = (props: Props) => {
         </Button>
       </div>
       {spinner}
-    </motion.div>
+    </div>
   );
 };
 
@@ -87,13 +114,27 @@ const useStyles = createUseStyles({
       },
     },
   },
-  GatheringBox_active: {
-    border: '4px solid rgba(0, 176, 255, 0.5)',
+  GatheringBox_active: ({ connectionState }) => ({
+    border: `4px solid rgb(${getColor(connectionState)})`,
     padding: 24,
+    paddingTop: 32,
     '&:hover': {
-      background: 'rgba(0, 176, 255, 0.1)',
+      background: `rgba(${getColor(connectionState)}, 0.1)`,
     },
-  },
+  }),
+  GatheringBox_status: ({ connectionState }) => ({
+    borderBottomLeftRadius: 12,
+    borderTopRightRadius: 4,
+    background: `rgb(${getColor(connectionState)})`,
+    color: '#fff',
+    paddingLeft: 8,
+    paddingBottom: 4,
+    paddingRight: 4,
+    position: 'absolute',
+    pointerEvents: 'none',
+    right: 0,
+    top: 0,
+  }),
   GatheringBox_loader: {
     alignItems: 'center',
     background: 'rgba(0, 0, 0, 0.1)',
