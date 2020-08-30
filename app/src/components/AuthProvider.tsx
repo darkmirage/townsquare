@@ -36,10 +36,12 @@ const AuthProvider = (props: React.ComponentPropsWithoutRef<'div'>) => {
     return firebase.auth().onAuthStateChanged(async () => {
       const user = firebase.auth().currentUser;
       if (!user) {
+        setContext((c) => ({ ...c, loading: false, user: null }));
         return;
       }
 
       const token = await user.getIdToken();
+      setContext((c) => ({ ...c, loading: true }));
       getOrCreateUser({ variables: { firebaseIdToken: token } });
     });
   }, [getOrCreateUser]);

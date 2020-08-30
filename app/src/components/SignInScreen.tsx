@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import SignInButton from './SignInButton';
 import { AuthContext } from './AuthProvider';
+import Spinner from './Spinner';
 
 const SignInScreen = (
   props: RouteComponentProps<{}, {}, { referrer: string } | undefined>
@@ -21,7 +22,11 @@ const SignInScreen = (
     }
   }, [user, props.history, props.location.state]);
 
-  return loading ? null : <SignInButton />;
+  if (user) {
+    return <Spinner key="sign-in" />;
+  }
+
+  return loading ? <Spinner key="sign-in" /> : <SignInButton />;
 };
 
 export default SignInScreen;
