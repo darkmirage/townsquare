@@ -1,19 +1,13 @@
-const SnakeNamingStrategy = require('typeorm-naming-strategies').SnakeNamingStrategy;
+require('dotenv').config();
+const SnakeNamingStrategy = require('typeorm-naming-strategies')
+  .SnakeNamingStrategy;
 
-const DB_USER = 'postgres';
-const DB_PASSWORD = 'thisisfine1';
-const DB_URL = 'raven-ubuntu';
-const DB_PORT = 5432;
-const DB_NAME = 'townsquare';
+const url = process.env.HASURA_GRAPHQL_DATABASE_URL;
 
 module.exports = {
   type: 'postgres',
-  host: DB_URL,
-  port: DB_PORT,
-  username: DB_USER,
-  password: DB_PASSWORD,
-  database: DB_NAME,
+  url,
   namingStrategy: new SnakeNamingStrategy(),
   synchronize: true,
   entities: ['src/entities/*.ts'],
-}
+};
