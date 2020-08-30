@@ -1,4 +1,4 @@
-let AGORA_APP_ID ='';
+let AGORA_APP_ID = '';
 let GRPAHQL_HTTP_URL = '';
 let GRAPHQL_WS_URL = '';
 let PRESENCE_WS_URL = '';
@@ -17,12 +17,9 @@ switch (process.env.NODE_ENV) {
     PRESENCE_WS_URL = process.env.REACT_APP_PROD_PRESENCE_WS_URL!;
     break;
   default:
-    throw new Error(`Missing configurations for environment: ${process.env.NODE_ENV}`);
+    throw new Error(
+      `Missing configurations for environment: ${process.env.NODE_ENV}`
+    );
 }
 
-export {
-  AGORA_APP_ID,
-  GRAPHQL_WS_URL,
-  GRPAHQL_HTTP_URL,
-  PRESENCE_WS_URL,
-}
+export { AGORA_APP_ID, GRAPHQL_WS_URL, GRPAHQL_HTTP_URL, PRESENCE_WS_URL };
