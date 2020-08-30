@@ -1,6 +1,6 @@
 import AgoraRTC from 'agora-rtc-sdk-ng';
 
-AgoraRTC.setLogLevel(4);
+AgoraRTC.setLogLevel(2);
 const AGORA_APP_ID = 'b4b2d6ff48ca4022a3259a1f99cac9c5';
 const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
 

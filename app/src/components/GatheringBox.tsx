@@ -2,12 +2,13 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql, useMutation } from '@apollo/client';
 import classNames from 'classnames';
+import useSound from 'use-sound';
+import { ConnectionState } from 'agora-rtc-sdk-ng';
 
 import { AgoraContext } from './AgoraProvider';
 import { TownerContext } from './TownerProvider';
 import TownerBox from './TownerBox';
 import Button from './Button';
-import { ConnectionState } from 'agora-rtc-sdk-ng';
 
 type Props = {
   gathering: {
@@ -50,6 +51,7 @@ const GatheringBox = (props: Props) => {
   const { townerId } = React.useContext(TownerContext);
   const { connectionState } = React.useContext(AgoraContext);
   const [joinGathering, { loading }] = useMutation(JOIN_GATHERING);
+  const [playNotification] = useSound('/notification.mp3', { volume: 0.25 });
   const classes = useStyles({ connectionState });
 
   let isActive = false;
@@ -62,6 +64,12 @@ const GatheringBox = (props: Props) => {
 
     return <TownerBox key={p.towner.id} towner={p.towner} isUser={isUser} />;
   });
+
+  React.useEffect(() => {
+    if (connectionState === 'CONNECTED') {
+      playNotification();
+    }
+  }, [playNotification, connectionState]);
 
   const handleClick = React.useCallback(() => {
     joinGathering({ variables: { gatheringId: id, leave: isActive } });
