@@ -13,6 +13,8 @@ const GET_OR_CREATE_TOWNER = gql`
   }
 `;
 
+const ws = new WebSocket('ws://raven-ubuntu:3000/');
+
 type TownerContextType = {
   townerId: number;
 };
@@ -48,6 +50,7 @@ const TownerProvider = (props: Props) => {
       return;
     }
     const townerId = data.getOrCreateTowner.townerId || 0;
+    ws.send(townerId);
     setContext({ townerId });
   }, [data, setContext]);
 
