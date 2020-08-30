@@ -4,9 +4,7 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 import { setContext } from '@apollo/client/link/context';
 
 import { getToken } from 'jwt';
-
-const GRPAHQL_HTTP_URL = 'http://raven-ubuntu:8080/v1/graphql';
-const GRAPHQL_WS_URL = 'ws://raven-ubuntu:8080/v1/graphql';
+import { GRAPHQL_WS_URL, GRPAHQL_HTTP_URL } from 'config';
 
 const httpLink = new HttpLink({
   uri: GRPAHQL_HTTP_URL,

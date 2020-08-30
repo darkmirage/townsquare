@@ -1,6 +1,7 @@
 import React from 'react';
 import { gql, useMutation } from '@apollo/client';
 
+import { PRESENCE_WS_URL } from 'config';
 import { AuthContext } from './AuthProvider';
 import Spinner from './Spinner';
 
@@ -13,7 +14,7 @@ const GET_OR_CREATE_TOWNER = gql`
   }
 `;
 
-const ws = new WebSocket('ws://raven-ubuntu:3000/');
+const ws = new WebSocket(PRESENCE_WS_URL);
 
 type TownerContextType = {
   townerId: number;
