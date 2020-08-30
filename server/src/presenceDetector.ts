@@ -29,10 +29,10 @@ wss.on('connection', (ws) => {
       if (!townerId) {
         return;
       }
-      const towner = await connection.getRepository(Towner).findOne(townerId);
+      const towner = await manager.getRepository(Towner).findOne(townerId);
       if (towner) {
         towner.isOnline = false;
-        await connection.manager.save(towner);
+        await manager.save(towner);
       }
     });
   });
