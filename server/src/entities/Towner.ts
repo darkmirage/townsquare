@@ -37,15 +37,21 @@ export default class Towner {
 
   @Column({
     type: 'boolean',
-    default: true,
+    default: false,
   })
   isVisitor: boolean;
 
   @Column({
     type: 'boolean',
-    default: true,
+    default: false,
   })
   isOnline: boolean;
+
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  isAway: boolean;
 
   @Column({
     type: 'timestamp',
