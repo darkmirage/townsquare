@@ -22,6 +22,7 @@ type TownerContextType = {
 
 type Props = {
   domain: string;
+  unauthorized: React.ReactNode;
 } & React.ComponentPropsWithoutRef<'div'>;
 
 const defaultContext: TownerContextType = {
@@ -36,6 +37,7 @@ const TownerProvider = (props: Props) => {
   const { domain } = props;
   const { user } = React.useContext(AuthContext);
   const [context, setContext] = React.useState(defaultContext);
+  const [error, setError] = React.useState(false);
   const [getOrCreateTowner, { data, loading }] = useMutation(
     GET_OR_CREATE_TOWNER
   );
@@ -50,10 +52,19 @@ const TownerProvider = (props: Props) => {
     if (!data) {
       return;
     }
-    const townerId = data.getOrCreateTowner.townerId || 0;
-    ws.send(townerId);
-    setContext({ townerId });
-  }, [data, setContext]);
+    console.log(data);
+    const { townerId, success } = data.getOrCreateTowner;
+    if (success && townerId) {
+      ws.send(townerId);
+      setContext({ townerId });
+    } else {
+      setError(true);
+    }
+  }, [data, setContext, setError]);
+
+  if (error) {
+    return <>{props.unauthorized}</>;
+  }
 
   return (
     <TownerContext.Provider value={context}>

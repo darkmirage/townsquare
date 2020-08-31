@@ -2,38 +2,34 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 
 import { AuthContext } from './AuthProvider';
-import Button from './Button';
+import SignOutButton from './SignOutButton';
 import FullScreenMessage from './FullScreenMessage';
 
 type Props = {
   name: string;
-  onClick: () => void;
 };
 
-const WelcomeMessage = (props: Props) => {
+const UnauthorizedMessage = (props: Props) => {
   const classes = useStyles();
   const { user } = React.useContext(AuthContext);
 
-  const header = (
-    <>
-      This is the online townsquare of <strong>{props.name}</strong>
-    </>
-  );
+  const header = <>Oops!</>;
   const body = (
     <>
       <p>
-        You can start a conversation with anyone who is online, but please be
-        respectful!
+        You do not have permission to access the townsquare of{' '}
+        <strong>{props.name}</strong>. Please check with the administrator or
+        sign in with a different account that does have access.
       </p>
       <p>
-        Signed in as <strong>{user?.displayName}</strong> ({user?.email})
+        Signed in as <strong>{user?.email}</strong>.
       </p>
     </>
   );
   const footer = (
-    <Button className={classes.WelcomeMessage_button} onClick={props.onClick}>
+    <SignOutButton className={classes.WelcomeMessage_button}>
       Enter Townsquare
-    </Button>
+    </SignOutButton>
   );
 
   return <FullScreenMessage header={header} body={body} footer={footer} />;
@@ -41,9 +37,9 @@ const WelcomeMessage = (props: Props) => {
 
 const useStyles = createUseStyles({
   WelcomeMessage_button: {
-    background: 'rgb(0, 176, 255)',
+    background: 'rgb(255, 81, 0)',
     padding: '8px 16px',
   },
 });
 
-export default WelcomeMessage;
+export default UnauthorizedMessage;

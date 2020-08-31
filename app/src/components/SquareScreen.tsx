@@ -8,6 +8,7 @@ import GatheringList from './GatheringList';
 import Spinner from './Spinner';
 import TownerList from './TownerList';
 import TownerProvider from './TownerProvider';
+import UnauthorizedMessage from './UnauthorizedMessage';
 import WelcomeMessage from './WelcomeMessage';
 
 const GET_SQUARE = gql`
@@ -45,7 +46,10 @@ const SquareScreen = (
   const square = data.square[0];
 
   const content = interacted ? (
-    <TownerProvider domain={domain}>
+    <TownerProvider
+      domain={domain}
+      unauthorized={<UnauthorizedMessage name={square.name} />}
+    >
       <ActiveGathering />
       <GatheringList square={square} />
       <TownerList square={square} />
