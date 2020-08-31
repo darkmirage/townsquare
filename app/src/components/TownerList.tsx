@@ -13,14 +13,11 @@ const TownerList = (props: Props) => {
   const { townerId } = React.useContext(TownerContext);
   const { towners } = props.square;
   const classes = useStyles();
-  const elems = towners.map((towner: any) => (
-    <TownerBox
-      key={towner.id}
-      towner={towner}
-      clickable
-      isUser={townerId === towner.id}
-    />
-  ));
+  const elems = towners.map((towner: any) =>
+    townerId !== towner.id ? (
+      <TownerBox key={towner.id} towner={towner} clickable isUser={false} />
+    ) : null
+  );
 
   return <div className={classes.TownerList}>{elems}</div>;
 };

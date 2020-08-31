@@ -24,23 +24,31 @@ const App = () => {
   );
 
   return (
-    <div className={classes.root}>
-      <AnimateSharedLayout>
-        <AgoraProvider>
-          <ApolloProvider client={apolloClient}>
-            <AuthProvider>{routes}</AuthProvider>
-          </ApolloProvider>
-        </AgoraProvider>
-      </AnimateSharedLayout>
+    <div className={classes.App}>
+      <div className={classes.App_container}>
+        <AnimateSharedLayout>
+          <AgoraProvider>
+            <ApolloProvider client={apolloClient}>
+              <AuthProvider>{routes}</AuthProvider>
+            </ApolloProvider>
+          </AgoraProvider>
+        </AnimateSharedLayout>
+      </div>
     </div>
   );
 };
 
 const useStyles = createUseStyles({
-  root: {
-    alignItems: 'center',
+  App: {
+    alignItems: 'flex-start',
     display: 'flex',
     height: '100%',
+    justifyContent: 'center',
+  },
+  App_container: {
+    minHeight: '90%',
+    display: 'flex',
+    alignItems: 'center',
     justifyContent: 'center',
   },
 });

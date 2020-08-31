@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { motion } from 'framer-motion';
 
 import { getInitials } from 'utils';
+import OnlineIndicator from './OnlineIndicator';
 import Spinner from './Spinner';
 import AgoraSpeaker from './AgoraSpeaker';
 
@@ -18,18 +19,36 @@ const JOIN_TOWNER = gql`
 `;
 
 type Props = {
-  towner: { name: string; id: number; is_online: boolean; user_id: number };
-  clickable: boolean;
-  isUser: boolean;
+  towner: {
+    name: string;
+    id: number;
+    is_online: boolean;
+    is_away: boolean;
+    user_id: number;
+  };
+  clickable?: boolean;
+  isUser?: boolean;
+  showName?: boolean;
+  showIndicator?: boolean;
 };
 
-const TownerBox = (props: Props) => {
+const TownerBox = ({
+  towner,
+  clickable = false,
+  isUser = false,
+  showName = true,
+  showIndicator = true,
+}: Props) => {
   const classes = useStyles();
-  const { towner, clickable, isUser } = props;
-  const { name, is_online: isOnline, user_id: userId } = towner;
+  const {
+    name,
+    is_online: isOnline,
+    user_id: userId,
+    is_away: isAway,
+  } = towner;
   const [joinTowner, { loading }] = useMutation(JOIN_TOWNER);
 
-  const active = clickable && isOnline && !isUser && !loading;
+  const active = clickable && isOnline && !isUser && !loading && !isAway;
 
   const initials = getInitials(name);
 
@@ -51,7 +70,7 @@ const TownerBox = (props: Props) => {
     >
       <div className={classes.TownerBox_avatar}>{initials}</div>
       <AgoraSpeaker uid={`user-${userId}`} />
-      <div className={classes.TownerBox_label}>{name}</div>
+      {showName ? <div className={classes.TownerBox_label}>{name}</div> : null}
       <div className={classes.TownerBox_overlay}>
         <Spinner
           className={classNames(classes.TownerBox_spinner, {
@@ -59,18 +78,15 @@ const TownerBox = (props: Props) => {
           })}
         />
       </div>
-      <div
-        className={classNames(classes.TownerBox_indicator, {
-          [classes.TownerBox_visible]: isOnline,
-        })}
-      ></div>
+      {showIndicator ? (
+        <OnlineIndicator
+          className={classes.TownerBox_indicator}
+          isOnline={isOnline}
+          isAway={isAway}
+        />
+      ) : null}
     </motion.div>
   );
-};
-
-TownerBox.defaultProps = {
-  clickable: false,
-  isUser: false,
 };
 
 const useStyles = createUseStyles({
@@ -110,20 +126,13 @@ const useStyles = createUseStyles({
     textAlign: 'center',
   },
   TownerBox_indicator: {
-    background: '#0f0',
-    borderRadius: 8,
-    height: 16,
-    opacity: 0,
-    pointerEvents: 'none',
     position: 'absolute',
     right: 0,
     top: 0,
-    transition: '200ms',
-    width: 16,
   },
   TownerBox_spinner: {
     opacity: 0,
-    transition: '200ms',
+    transition: 'opacity 200ms',
   },
   TownerBox_visible: {
     opacity: 1,
@@ -147,6 +156,7 @@ TownerBox.fragments = {
       id
       name
       is_online
+      is_away
       is_visitor
       user_id
     }
