@@ -3,15 +3,15 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { setContext } from '@apollo/client/link/context';
 
-import { getToken } from 'jwt';
+import { refreshToken } from 'jwt';
 import { GRAPHQL_WS_URL, GRPAHQL_HTTP_URL } from 'config';
 
 const httpLink = new HttpLink({
   uri: GRPAHQL_HTTP_URL,
 });
 
-const authLink = setContext((_, { headers }) => {
-  const token = getToken();
+const authLink = setContext(async (_, { headers }) => {
+  const token = await refreshToken();
   const additionalHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
   return {
@@ -27,8 +27,8 @@ const wsLink = new WebSocketLink({
   options: {
     lazy: true,
     reconnect: true,
-    connectionParams: () => {
-      const token = getToken();
+    connectionParams: async () => {
+      const token = await refreshToken();
       return token
         ? {
             headers: {
