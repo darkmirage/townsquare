@@ -3,10 +3,10 @@ import { createUseStyles } from 'react-jss';
 import classNames from 'classnames';
 
 type Props = React.ComponentPropsWithoutRef<'div'> & {
-  loading: boolean;
+  loading?: boolean;
 };
 
-const Button = ({ loading = false, className, children, ...rest }: Props) => {
+const Button = ({ className, children, loading = false, ...rest }: Props) => {
   const classes = useStyles();
 
   return (

@@ -5,9 +5,10 @@ import { gql, useSubscription } from '@apollo/client';
 
 import ActiveGathering from './ActiveGathering';
 import GatheringList from './GatheringList';
-import TownerList from './TownerList';
 import Spinner from './Spinner';
+import TownerList from './TownerList';
 import TownerProvider from './TownerProvider';
+import WelcomeMessage from './WelcomeMessage';
 
 const GET_SQUARE = gql`
   subscription GetSquare($domain: String!) {
@@ -32,21 +33,32 @@ const SquareScreen = (
   const { loading, error, data } = useSubscription(GET_SQUARE, {
     variables: { domain },
   });
+  const [interacted, setInteracted] = React.useState(false);
+
+  const handleClick = React.useCallback(() => {
+    setInteracted(true);
+  }, [setInteracted]);
 
   if (loading) return <Spinner />;
   if (error) return <div>Error</div>;
 
   const square = data.square[0];
 
-  return (
+  const content = interacted ? (
     <TownerProvider domain={domain}>
-      <div className={classes.SquareScreen}>
-        <div className={classes.SquareScreen_name}>{square.name}</div>
-        <ActiveGathering />
-        <GatheringList square={square} />
-        <TownerList square={square} />
-      </div>
+      <ActiveGathering />
+      <GatheringList square={square} />
+      <TownerList square={square} />
     </TownerProvider>
+  ) : (
+    <WelcomeMessage name={square.name} onClick={handleClick} />
+  );
+
+  return (
+    <div className={classes.SquareScreen}>
+      <div className={classes.SquareScreen_name}>{square.name}</div>
+      {content}
+    </div>
   );
 };
 
