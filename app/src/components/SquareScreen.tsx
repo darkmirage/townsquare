@@ -56,6 +56,7 @@ const useStyles = createUseStyles({
     padding: 16,
   },
   SquareScreen_name: {
+    display: 'none',
     fontSize: 24,
     fontWeight: 600,
     marginBottom: 16,

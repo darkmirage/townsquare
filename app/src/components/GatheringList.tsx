@@ -24,6 +24,7 @@ const useStyles = createUseStyles({
     display: 'flex',
     flexWrap: 'wrap',
     marginBottom: 12,
+    minHeight: 256,
     width: '100%',
   },
 });
