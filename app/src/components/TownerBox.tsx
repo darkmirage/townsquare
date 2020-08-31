@@ -123,7 +123,9 @@ const useStyles = createUseStyles({
   TownerBox_label: {
     fontSize: 14,
     marginTop: 4,
+    overflow: 'hidden',
     textAlign: 'center',
+    textOverflow: 'ellipsis',
   },
   TownerBox_indicator: {
     position: 'absolute',
