@@ -2,7 +2,7 @@ import AgoraRTC from 'agora-rtc-sdk-ng';
 
 import { AGORA_APP_ID } from 'config';
 
-AgoraRTC.setLogLevel(2);
+AgoraRTC.setLogLevel(4);
 const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
 
 export async function joinChannel(channel: string, token: string, uid: string) {
