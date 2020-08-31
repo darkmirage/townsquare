@@ -52,7 +52,6 @@ const TownerProvider = (props: Props) => {
     if (!data) {
       return;
     }
-    console.log(data);
     const { townerId, success } = data.getOrCreateTowner;
     if (success && townerId) {
       ws.send(townerId);
