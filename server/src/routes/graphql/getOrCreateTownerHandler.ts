@@ -47,7 +47,11 @@ router.post(
         return;
       }
 
-      const doc = await admin.firestore().collection('settings').doc('whitelist').get();
+      const doc = await admin
+        .firestore()
+        .collection('settings')
+        .doc('whitelist')
+        .get();
       const { whitelist } = doc.data() as { whitelist: string[] };
 
       // Validate user permission to access square
