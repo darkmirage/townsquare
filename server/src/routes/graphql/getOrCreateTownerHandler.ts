@@ -18,6 +18,8 @@ type GetOrCreateTownerRequest = Request<
   }
 >;
 
+const WHITELIST = ['nadesico@gmail.com'];
+
 const router = Router();
 
 router.post(
@@ -44,6 +46,14 @@ router.post(
       const user = await manager.getRepository(User).findOne(id);
       if (!user) {
         res.status(500).json({ success: false });
+        return;
+      }
+
+      // Validate user permission to access square
+      const emailDomain = user.email.split('@')[1];
+
+      if (!emailDomain.includes(domain) && !WHITELIST.includes(user.email)) {
+        res.json({ success: false });
         return;
       }
 
