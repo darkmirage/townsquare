@@ -18,8 +18,6 @@ type GetOrCreateTownerRequest = Request<
   }
 >;
 
-const WHITELIST = ['nadesico@gmail.com'];
-
 const router = Router();
 
 router.post(
@@ -49,10 +47,13 @@ router.post(
         return;
       }
 
+      const doc = await admin.firestore().collection('settings').doc('whitelist').get();
+      const { whitelist } = doc.data() as { whitelist: string[] };
+
       // Validate user permission to access square
       const emailDomain = user.email.split('@')[1];
 
-      if (!emailDomain.includes(domain) && !WHITELIST.includes(user.email)) {
+      if (!emailDomain.includes(domain) && !whitelist.includes(user.email)) {
         res.json({ success: false });
         return;
       }
