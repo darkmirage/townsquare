@@ -89,9 +89,12 @@ const GatheringBox = (props: Props) => {
         [classes.GatheringBox_active]: isActive,
       })}
     >
+      <div className={classes.GatheringBox_header}>
+        <div className={classes.GatheringBox_label}>{description}</div>
+      </div>
       {connnectionState}
-      <div className={classes.GatheringBox_label}>{description}</div>
-      {towners}
+      <div className={classes.GatheringBox_towners}>{towners}</div>
+
       <div className={classes.GatheringBox_menu}>
         <Button onClick={handleClick} loading={loading}>
           {isActive ? 'Leave' : 'Join'}
@@ -104,43 +107,58 @@ const GatheringBox = (props: Props) => {
 
 const useStyles = createUseStyles({
   GatheringBox: {
-    border: '4px solid rgba(0, 0, 0, 0.1)',
+    background: '#fff',
+    border: '4px solid rgba(229, 229, 229)',
     borderRadius: 12,
-    display: 'flex',
-    flexWrap: 'wrap',
-    padding: 8,
     marginBottom: 12,
     marginRight: 24,
-    maxWidth: 240,
     position: 'relative',
-    transition: '200ms',
+    transition: 'background 200ms, border 200ms',
     '&:hover': {
       background: '#eee',
       '& $GatheringBox_menu': {
         opacity: 1.0,
       },
+      '& $GatheringBox_header': {
+        visibility: 'visible',
+        opacity: 1,
+      },
     },
+  },
+  GatheringBox_towners: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    maxWidth: 240,
+    minWidth: 160,
+    padding: 8,
   },
   GatheringBox_active: ({ connectionState }) => ({
     border: `4px solid rgb(${getColor(connectionState)})`,
-    padding: 24,
-    paddingTop: 32,
     '&:hover': {
       background: `rgba(${getColor(connectionState)}, 0.1)`,
     },
+    '& $GatheringBox_header': {
+      color: '#fff',
+      background: `rgb(${getColor(connectionState)})`,
+    },
+    '& $GatheringBox_towners': {
+      padding: 24,
+      paddingBottom: 32,
+    },
   }),
   GatheringBox_status: ({ connectionState }) => ({
-    borderBottomLeftRadius: 12,
-    borderTopRightRadius: 4,
+    borderBottomLeftRadius: 4,
+    borderTopRightRadius: 12,
     background: `rgb(${getColor(connectionState)})`,
     color: '#fff',
-    paddingLeft: 8,
-    paddingBottom: 4,
-    paddingRight: 4,
+    paddingLeft: 4,
+    paddingTop: 4,
+    paddingRight: 8,
     position: 'absolute',
     pointerEvents: 'none',
-    right: 0,
-    top: 0,
+    left: 0,
+    bottom: 0,
   }),
   GatheringBox_loader: {
     alignItems: 'center',
@@ -153,10 +171,29 @@ const useStyles = createUseStyles({
     right: 0,
     top: 0,
   },
-  GatheringBox_label: {
-    fontSize: 14,
+  GatheringBox_header: {
+    borderTopRightRadius: 12,
+    borderTopLeftRadius: 12,
+    background: 'rgba(229, 229, 229)',
+    opacity: 0,
+    padding: 8,
     position: 'absolute',
     top: 0,
+    transform: 'translateY(calc(-100%))',
+    transition: 'opacity 200ms, background 200ms, color 200ms',
+    visibility: 'hidden',
+    '&:hover': {
+      opacity: 1,
+      visibility: 'visible',
+    },
+  },
+  GatheringBox_label: {
+    fontSize: 16,
+    fontWeight: 600,
+    maxHeight: '2.5em',
+    lineHeight: '1.25em',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   GatheringBox_menu: {
     bottom: 0,
