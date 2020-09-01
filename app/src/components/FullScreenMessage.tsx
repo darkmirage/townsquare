@@ -24,7 +24,7 @@ const useStyles = createUseStyles({
     alignItems: 'flex-start',
     display: 'flex',
     flexDirection: 'column',
-    width: 400,
+    width: 352,
     lineHeight: 1.5,
     fontSize: 20,
   },
