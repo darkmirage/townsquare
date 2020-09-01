@@ -75,6 +75,7 @@ const GatheringBox = (props: Props) => {
 
   return (
     <PureGatheringBox
+      id={id}
       menu={menu}
       overlay={overlay}
       connectionState={connectionState}

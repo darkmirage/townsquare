@@ -2,6 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql } from '@apollo/client';
 
+import DummyGatheringBox from './DummyGatheringBox';
 import GatheringBox from './GatheringBox';
 
 type Props = {
@@ -15,7 +16,14 @@ const GatheringList = (props: Props) => {
     <GatheringBox key={gathering.id} gathering={gathering} />
   ));
 
-  return <div className={classes.GatheringList}>{elems}</div>;
+  return (
+    <>
+      <div className={classes.GatheringList}>
+        <DummyGatheringBox />
+      </div>
+      <div className={classes.GatheringList}>{elems}</div>
+    </>
+  );
 };
 
 const useStyles = createUseStyles({
@@ -24,7 +32,6 @@ const useStyles = createUseStyles({
     display: 'flex',
     flexWrap: 'wrap',
     marginBottom: 12,
-    minHeight: 256,
     width: '100%',
   },
 });

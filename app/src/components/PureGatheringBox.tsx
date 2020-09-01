@@ -2,16 +2,18 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import classNames from 'classnames';
 import { ConnectionState } from 'agora-rtc-sdk-ng';
+import { motion } from 'framer-motion';
 
 type Props = {
-  connectionState: ConnectionState;
-  isActive: boolean;
-  isLocked: boolean;
-  description: string;
+  id: number;
   children: React.ReactNode;
+  connectionState?: ConnectionState;
+  description?: string;
+  isActive?: boolean;
+  isLocked?: boolean;
+  loading?: boolean;
   menu?: React.ReactNode;
   overlay?: React.ReactNode;
-  loading: boolean;
 };
 
 function getColor(connectionState: ConnectionState): string {
@@ -35,12 +37,13 @@ function getColor(connectionState: ConnectionState): string {
 }
 
 const PureGatheringBox = ({
+  id,
   children,
-  connectionState,
-  isActive,
-  isLocked,
-  description,
-  loading,
+  connectionState = 'DISCONNECTED',
+  description = '',
+  isActive = false,
+  isLocked = false,
+  loading = false,
   menu = null,
   overlay = null,
 }: Props) => {
@@ -54,22 +57,27 @@ const PureGatheringBox = ({
     <div className={classes.PureGatheringBox_status}>{connectionState}</div>
   ) : null;
 
+  const header = description ? (
+    <div className={classes.PureGatheringBox_header}>
+      <div className={classes.PureGatheringBox_label}>{description}</div>
+    </div>
+  ) : null;
+
   return (
-    <div
+    <motion.div
+      layoutId={`gathering-${id}`}
       className={classNames(classes.PureGatheringBox, {
         [classes.PureGatheringBox_active]: isActive,
         [classes.PureGatheringBox_locked]: isLocked,
       })}
     >
-      <div className={classes.PureGatheringBox_header}>
-        <div className={classes.PureGatheringBox_label}>{description}</div>
-      </div>
+      {header}
       <div className={classes.PureGatheringBox_overlay}>{overlay}</div>
       <div className={classes.PureGatheringBox_content}>{children}</div>
       {connectionMessage}
       <div className={classes.PureGatheringBox_menu}>{menu}</div>
       {spinner}
-    </div>
+    </motion.div>
   );
 };
 
