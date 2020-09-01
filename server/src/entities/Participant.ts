@@ -36,4 +36,10 @@ export default class Participant {
     default: false,
   })
   isSpeaking: boolean;
+
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  isMuted: boolean;
 }
