@@ -59,13 +59,18 @@ router.post('/joinTowner', async (req: JoinTownerRequest, res) => {
     }
 
     let { gathering } = t2.participant;
+    let created = !gathering;
     if (!gathering) {
-      gathering = await createGathering(manager, t2.square);
+      gathering = await createGathering(
+        manager,
+        t2.square,
+        `${t1.name.split(' ')[0]}'s gathering`
+      );
       t2.participant.gathering = gathering;
       await manager.save(t2.participant);
     }
 
-    await setGathering(manager, t1.participant, gathering);
+    await setGathering(manager, t1.participant, gathering, created);
 
     res.json({ success: true, gatheringId: gathering.id });
   });

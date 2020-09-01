@@ -9,7 +9,8 @@ import Towner from '../../entities/Towner';
 export async function setGathering(
   manager: EntityManager,
   participant: Participant,
-  gathering: Gathering | null = null
+  gathering: Gathering | null = null,
+  isModerator: boolean = false
 ) {
   if (participant.gathering) {
     const g = participant.gathering;
@@ -20,13 +21,14 @@ export async function setGathering(
       .select('COUNT(participant.towner_id)', 'count')
       .where('gathering.id = :id', { id: g.id })
       .getRawOne();
-    if (count <= 2) {
+    if (count <= 1 || participant.isModerator) {
       await manager.delete(Gathering, g);
     }
   }
 
+  participant.isModerator = isModerator;
   participant.gathering = gathering;
-  await manager.save(Participant, participant);
+  await manager.save(participant);
 }
 
 export async function getTownerForUser(
@@ -67,12 +69,16 @@ export async function joinGathering(
   return true;
 }
 
-export async function createGathering(manager: EntityManager, square: Square) {
+export async function createGathering(
+  manager: EntityManager,
+  square: Square,
+  description: string = ''
+) {
   const gathering = manager.create(Gathering, {
     square: square,
     isInviteOnly: false,
     isResidentOnly: false,
-    description: '',
+    description,
     channel: uuid(),
   });
 
