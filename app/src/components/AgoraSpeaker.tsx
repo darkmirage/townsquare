@@ -1,7 +1,9 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng';
+import useSound from 'use-sound';
 
+import { debounce } from 'utils';
 import agoraClient from '../agoraClient';
 
 type Props = {
@@ -21,6 +23,14 @@ const AgoraSpeaker = ({ uid }: Props) => {
   const [audioTrack, setAudioTrack] = React.useState<IAudioTrack | null>(null);
   const [level, setLevel] = React.useState(0);
   const classes = useStyles();
+  const [playEnter] = useSound('/enter.mp3', { volume: 0.25 });
+  const [playExit] = useSound('/exit.mp3', { volume: 0.25 });
+  const playEnterDebounced = React.useCallback(debounce(playEnter, 500), [
+    playEnter,
+  ]);
+  const playExitDebounced = React.useCallback(debounce(playExit, 500), [
+    playExit,
+  ]);
 
   const handlePublished = React.useCallback(
     async (user: IAgoraRTCRemoteUser, mediaType: 'audio' | 'video') => {
@@ -28,12 +38,22 @@ const AgoraSpeaker = ({ uid }: Props) => {
         await agoraClient.subscribe(user, mediaType);
         const { audioTrack } = user;
         if (audioTrack) {
+          playEnterDebounced();
           audioTrack.play();
           setAudioTrack(audioTrack as any);
         }
       }
     },
-    [uid]
+    [uid, playEnterDebounced]
+  );
+
+  const handleLeave = React.useCallback(
+    async (user: IAgoraRTCRemoteUser) => {
+      if (user.uid === uid) {
+        playExitDebounced();
+      }
+    },
+    [uid, playExitDebounced]
   );
 
   React.useEffect(() => {
@@ -61,10 +81,12 @@ const AgoraSpeaker = ({ uid }: Props) => {
 
   React.useEffect(() => {
     agoraClient.on('user-published', handlePublished);
+    agoraClient.on('user-left', handleLeave);
     return () => {
       agoraClient.off('user-published', handlePublished);
+      agoraClient.off('user-left', handleLeave);
     };
-  }, [handlePublished]);
+  }, [handlePublished, handleLeave]);
 
   return (
     <div

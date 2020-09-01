@@ -16,7 +16,7 @@ const AgoraChannel = (props: Props) => {
       await joinChannel(channel, token, uid);
     })();
     return () => {
-      agoraClient.leave();
+      agoraClient.unpublish().then(() => agoraClient.leave());
     };
   }, [channel, token, uid]);
 

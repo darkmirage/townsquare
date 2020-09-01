@@ -64,7 +64,6 @@ const UserToolbar = () => {
   if (!loading) {
     const { towner_by_pk: towner } = data;
     const { participant } = towner;
-    console.log(participant);
     const inGathering = !!participant.gathering;
     body = inGathering ? (
       <MuteToggle participant={participant} />
