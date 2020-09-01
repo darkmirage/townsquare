@@ -27,7 +27,7 @@ const UnauthorizedMessage = (props: Props) => {
     </>
   );
   const footer = (
-    <SignOutButton className={classes.WelcomeMessage_button}>
+    <SignOutButton className={classes.UnauthorizedMessage_button}>
       Enter Townsquare
     </SignOutButton>
   );
@@ -36,7 +36,7 @@ const UnauthorizedMessage = (props: Props) => {
 };
 
 const useStyles = createUseStyles({
-  WelcomeMessage_button: {
+  UnauthorizedMessage_button: {
     background: 'rgb(255, 81, 0)',
     padding: '8px 16px',
   },

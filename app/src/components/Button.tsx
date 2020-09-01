@@ -27,7 +27,7 @@ const useStyles = createUseStyles({
     color: '#fff',
     cursor: 'pointer',
     padding: '4px 8px',
-    transition: '200ms',
+    transition: 'color 200ms, filter 200ms',
     userSelect: 'none',
     '&:hover': {
       filter: 'brightness(90%)',

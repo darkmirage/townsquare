@@ -86,6 +86,7 @@ const UserToolbar = () => {
             />
           </div>
         </div>
+        <div className={classes.UserToolbar_right}></div>
       </>
     );
   }
@@ -125,6 +126,11 @@ const useStyles = createUseStyles({
   },
   UserToolbar_indicator: {
     marginLeft: 4,
+  },
+  UserToolbar_right: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
 });
 
