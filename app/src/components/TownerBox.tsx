@@ -25,6 +25,9 @@ type Props = {
     is_online: boolean;
     is_away: boolean;
     user_id: number;
+    participant: {
+      is_moderator: boolean;
+    };
   };
   clickable?: boolean;
   isUser?: boolean;
@@ -45,6 +48,7 @@ const TownerBox = ({
     is_online: isOnline,
     user_id: userId,
     is_away: isAway,
+    participant,
   } = towner;
   const [joinTowner, { loading }] = useMutation(JOIN_TOWNER);
 
@@ -70,7 +74,16 @@ const TownerBox = ({
     >
       <div className={classes.TownerBox_avatar}>{initials}</div>
       <AgoraSpeaker uid={`user-${userId}`} />
-      {showName ? <div className={classes.TownerBox_label}>{name}</div> : null}
+      {showName ? (
+        <div className={classes.TownerBox_label}>
+          {participant.is_moderator ? (
+            <span className={classes.TownerBox_moderator} role="presentation">
+              👑{' '}
+            </span>
+          ) : null}
+          {name}
+        </div>
+      ) : null}
       <div className={classes.TownerBox_overlay}>
         <Spinner
           className={classNames(classes.TownerBox_spinner, {
@@ -98,9 +111,6 @@ const useStyles = createUseStyles({
   TownerBox_user: {
     '& $TownerBox_avatar': {
       backgroundColor: '#333',
-    },
-    '& $TownerBox_label': {
-      fontWeight: 'bold',
     },
   },
   TownerBox_clickable: {
@@ -139,6 +149,9 @@ const useStyles = createUseStyles({
   TownerBox_visible: {
     opacity: 1,
   },
+  TownerBox_moderator: {
+    userSelect: 'none',
+  },
   TownerBox_overlay: {
     alignItems: 'center',
     display: 'flex',
@@ -161,6 +174,10 @@ TownerBox.fragments = {
       is_away
       is_visitor
       user_id
+      participant {
+        is_moderator
+        is_speaking
+      }
     }
   `,
 };
