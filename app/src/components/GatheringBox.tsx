@@ -1,5 +1,6 @@
 import React from 'react';
 import { gql, useMutation } from '@apollo/client';
+import useSound from 'use-sound';
 
 import { AgoraContext } from './AgoraProvider';
 import { TownerContext } from './TownerProvider';
@@ -48,6 +49,7 @@ const GatheringBox = (props: Props) => {
   const { connectionState } = React.useContext(AgoraContext);
   const [joinGathering, { loading }] = useMutation(JOIN_GATHERING);
   const [updateGathering] = useMutation(UPDATE_GATHERING);
+  const [playNotification] = useSound('/notification.mp3', { volume: 0.25 });
 
   let isActive = false;
   let isModerator = false;
@@ -63,6 +65,20 @@ const GatheringBox = (props: Props) => {
 
     return <TownerBox key={p.towner.id} towner={p.towner} isUser={isUser} />;
   });
+  const content =
+    towners.length === 4 ? (
+      <div style={{ width: 160, display: 'flex', flexWrap: 'wrap' }}>
+        {towners}
+      </div>
+    ) : (
+      towners
+    );
+
+  React.useEffect(() => {
+    if (connectionState === 'CONNECTED') {
+      playNotification();
+    }
+  }, [playNotification, connectionState]);
 
   const handleClick = React.useCallback(() => {
     joinGathering({ variables: { gatheringId: id, leave: isActive } });
@@ -97,7 +113,7 @@ const GatheringBox = (props: Props) => {
       loading={loading}
       onEdit={isModerator ? handleEdit : null}
     >
-      {towners}
+      {content}
     </PureGatheringBox>
   );
 };
