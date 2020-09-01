@@ -7,12 +7,14 @@ import { ConnectionState } from 'agora-rtc-sdk-ng';
 
 import { AgoraContext } from './AgoraProvider';
 import { TownerContext } from './TownerProvider';
-import TownerBox from './TownerBox';
 import Button from './Button';
+import LockToggle from './LockToggle';
+import TownerBox from './TownerBox';
 
 type Props = {
   gathering: {
     id: number;
+    is_invite_only: boolean;
     description: string;
     participants: any[];
   };
@@ -47,7 +49,12 @@ function getColor(connectionState: ConnectionState): string {
 }
 
 const GatheringBox = (props: Props) => {
-  const { description, participants, id } = props.gathering;
+  const {
+    description,
+    participants,
+    id,
+    is_invite_only: isInviteOnly,
+  } = props.gathering;
   const { townerId } = React.useContext(TownerContext);
   const { connectionState } = React.useContext(AgoraContext);
   const [joinGathering, { loading }] = useMutation(JOIN_GATHERING);
@@ -55,11 +62,16 @@ const GatheringBox = (props: Props) => {
   const classes = useStyles({ connectionState });
 
   let isActive = false;
+  let isModerator = false;
+  const isLocked = !isActive && isInviteOnly;
 
   const towners = participants.map((p) => {
     const isUser = townerId === p.towner.id;
     if (isUser) {
       isActive = true;
+      if (p.is_moderator) {
+        isModerator = true;
+      }
     }
 
     return <TownerBox key={p.towner.id} towner={p.towner} isUser={isUser} />;
@@ -87,10 +99,18 @@ const GatheringBox = (props: Props) => {
     <div
       className={classNames(classes.GatheringBox, {
         [classes.GatheringBox_active]: isActive,
+        [classes.GatheringBox_locked]: isLocked,
       })}
     >
       <div className={classes.GatheringBox_header}>
         <div className={classes.GatheringBox_label}>{description}</div>
+      </div>
+      <div className={classes.GatheringBox_lock}>
+        <LockToggle
+          gatheringId={id}
+          locked={isInviteOnly}
+          enabled={isModerator}
+        />
       </div>
       {connnectionState}
       <div className={classes.GatheringBox_towners}>{towners}</div>
@@ -110,7 +130,7 @@ const useStyles = createUseStyles({
     background: '#fff',
     border: '4px solid rgba(229, 229, 229)',
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 24,
     marginRight: 24,
     position: 'relative',
     transition: 'background 200ms, border 200ms',
@@ -123,6 +143,19 @@ const useStyles = createUseStyles({
         visibility: 'visible',
         opacity: 1,
       },
+      '& $GatheringBox_lock': {
+        visibility: 'visible',
+        opacity: 1,
+      },
+    },
+  },
+  GatheringBox_locked: {
+    '& $GatheringBox_lock': {
+      visibility: 'visible',
+      opacity: 1,
+    },
+    '& $GatheringBox_menu': {
+      display: 'none',
     },
   },
   GatheringBox_towners: {
@@ -131,7 +164,7 @@ const useStyles = createUseStyles({
     justifyContent: 'center',
     maxWidth: 240,
     minWidth: 160,
-    padding: 8,
+    padding: 12,
   },
   GatheringBox_active: ({ connectionState }) => ({
     border: `4px solid rgb(${getColor(connectionState)})`,
@@ -203,6 +236,15 @@ const useStyles = createUseStyles({
     transform: 'translate(-8px, 16px)',
     transition: '200ms',
   },
+  GatheringBox_lock: {
+    visibility: 'hidden',
+    color: 'rgba(0, 0, 0, 0.5)',
+    position: 'absolute',
+    padding: 8,
+    opacity: 0,
+    transition: 'opacity 200ms',
+    zIndex: 3,
+  },
 });
 
 GatheringBox.fragments = {
@@ -214,6 +256,7 @@ GatheringBox.fragments = {
       is_resident_only
       participants(order_by: { towner: { name: asc } }) {
         id
+        is_moderator
         towner {
           id
           user_id

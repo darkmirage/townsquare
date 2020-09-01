@@ -32,7 +32,7 @@ const useStyles = createUseStyles({
 GatheringList.fragments = {
   square: gql`
     fragment GatheringListSquare on square {
-      gatherings {
+      gatherings(order_by: { id: desc }) {
         id
         ...GatheringBoxGathering
       }
