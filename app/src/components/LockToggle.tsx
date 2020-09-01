@@ -56,6 +56,7 @@ const useStyles = createUseStyles({
     '&:hover': {
       '& $LockToggle_label': {
         opacity: 1.0,
+        visibility: 'visible',
       },
     },
   },
@@ -78,6 +79,7 @@ const useStyles = createUseStyles({
     opacity: 0,
     padding: 4,
     pointerEvents: 'none',
+    visibility: 'hidden',
   },
 });
 
