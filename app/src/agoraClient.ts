@@ -21,10 +21,12 @@ export async function joinChannel(channel: string, token: string, uid: string) {
 }
 
 let localAudioTrack: IMicrophoneAudioTrack | null = null;
+let volume = 100;
 
 client.on('connection-state-change', async () => {
   if (client.connectionState === 'CONNECTED') {
     localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    localAudioTrack.setVolume(volume);
     await client.publish([localAudioTrack]);
   } else if (client.connectionState === 'DISCONNECTED') {
     if (localAudioTrack) {
@@ -33,5 +35,16 @@ client.on('connection-state-change', async () => {
     }
   }
 });
+
+export function setVolume(v: number) {
+  volume = v;
+  if (localAudioTrack) {
+    localAudioTrack.setVolume(volume);
+  }
+}
+
+export function getVolume(): number {
+  return volume;
+}
 
 export default client;

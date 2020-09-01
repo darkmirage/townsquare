@@ -3,6 +3,7 @@ import { createUseStyles } from 'react-jss';
 import { gql, useMutation } from '@apollo/client';
 import classNames from 'classnames';
 import { motion } from 'framer-motion';
+import { ImVolumeMute2 } from 'react-icons/im';
 
 import { getInitials } from 'utils';
 import OnlineIndicator from './OnlineIndicator';
@@ -27,6 +28,7 @@ type Props = {
     user_id: number;
     participant: {
       is_moderator: boolean;
+      is_muted: boolean;
     };
   };
   clickable?: boolean;
@@ -68,6 +70,7 @@ const TownerBox = ({
       className={classNames(classes.TownerBox, {
         [classes.TownerBox_clickable]: active,
         [classes.TownerBox_user]: isUser,
+        [classes.TownerBox_offline]: !isOnline,
       })}
       role={active ? 'button' : undefined}
       onClick={active ? handleClick : undefined}
@@ -92,6 +95,11 @@ const TownerBox = ({
             [classes.TownerBox_visible]: loading,
           })}
         />
+        {participant.is_muted ? (
+          <div className={classes.TownerBox_muted}>
+            <ImVolumeMute2 />
+          </div>
+        ) : null}
       </div>
       {showIndicator ? (
         <OnlineIndicator
@@ -165,6 +173,23 @@ const useStyles = createUseStyles({
     top: 0,
     width: 64,
   },
+  TownerBox_muted: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    fontSize: 32,
+    height: 64,
+    width: 64,
+    borderRadius: 32,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(0, 0, 0, 0.5)',
+    color: '#fff',
+  },
+  TownerBox_offline: {
+    opacity: '0.5 !important',
+  },
 });
 
 TownerBox.fragments = {
@@ -179,6 +204,7 @@ TownerBox.fragments = {
       participant {
         is_moderator
         is_speaking
+        is_muted
       }
     }
   `,
