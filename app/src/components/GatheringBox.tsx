@@ -63,7 +63,9 @@ const GatheringBox = (props: Props) => {
       }
     }
 
-    return <TownerBox key={p.towner.id} towner={p.towner} isUser={isUser} />;
+    return (
+      <TownerBox key={p.towner.id} towner={p.towner} showMute isUser={isUser} />
+    );
   });
   const content =
     towners.length === 4 ? (

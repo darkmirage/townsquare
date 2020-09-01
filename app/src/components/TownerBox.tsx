@@ -34,6 +34,7 @@ type Props = {
   clickable?: boolean;
   isUser?: boolean;
   showName?: boolean;
+  showMute?: boolean;
   showIndicator?: boolean;
 };
 
@@ -41,6 +42,7 @@ const TownerBox = ({
   towner,
   clickable = false,
   isUser = false,
+  showMute = false,
   showName = true,
   showIndicator = true,
 }: Props) => {
@@ -95,7 +97,7 @@ const TownerBox = ({
             [classes.TownerBox_visible]: loading,
           })}
         />
-        {participant.is_muted ? (
+        {showMute && participant.is_muted ? (
           <div className={classes.TownerBox_muted}>
             <ImVolumeMute2 />
           </div>
