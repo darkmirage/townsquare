@@ -53,11 +53,6 @@ router.post('/joinTowner', async (req: JoinTownerRequest, res) => {
       return;
     }
 
-    if (t1.id === t2.id) {
-      res.status(500).json({ success: false });
-      return;
-    }
-
     let { gathering } = t2.participant;
     let created = !gathering;
     if (!gathering) {
