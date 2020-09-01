@@ -3,12 +3,14 @@ import { createUseStyles } from 'react-jss';
 import classNames from 'classnames';
 import { ConnectionState } from 'agora-rtc-sdk-ng';
 import { motion } from 'framer-motion';
+import { ImPencil2 } from 'react-icons/im';
 
 type Props = {
-  id: number;
   children: React.ReactNode;
   connectionState?: ConnectionState;
   description?: string;
+  onEdit?: ((newDescription: string) => void) | null;
+  id: number;
   isActive?: boolean;
   isLocked?: boolean;
   loading?: boolean;
@@ -41,6 +43,7 @@ const PureGatheringBox = ({
   children,
   connectionState = 'DISCONNECTED',
   description = '',
+  onEdit = null,
   isActive = false,
   isLocked = false,
   loading = false,
@@ -48,6 +51,40 @@ const PureGatheringBox = ({
   overlay = null,
 }: Props) => {
   const classes = useStyles({ connectionState });
+  const [editing, setEditing] = React.useState(false);
+  const [desc, setDesc] = React.useState(description);
+
+  const handleEdit = React.useCallback(() => {
+    if (onEdit) {
+      setEditing(true);
+    }
+  }, [onEdit, setEditing]);
+
+  const handleChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setDesc(event.target.value);
+    },
+    [setDesc]
+  );
+
+  const handleKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (onEdit && event.key === 'Enter') {
+        setEditing(false);
+        if (desc) {
+          onEdit(desc);
+        }
+      }
+    },
+    [setEditing, onEdit, desc]
+  );
+
+  const handleBlur = React.useCallback(() => {
+    setEditing(false);
+    if (onEdit && desc) {
+      onEdit(desc);
+    }
+  }, [setEditing, onEdit, desc]);
 
   const spinner = loading ? (
     <div className={classes.PureGatheringBox_loader}></div>
@@ -59,7 +96,29 @@ const PureGatheringBox = ({
 
   const header = description ? (
     <div className={classes.PureGatheringBox_header}>
-      <div className={classes.PureGatheringBox_label}>{description}</div>
+      <div
+        className={classNames(classes.PureGatheringBox_label, {
+          [classes.PureGatheringBox_editable]: !!onEdit,
+        })}
+        onClick={handleEdit}
+      >
+        {editing ? (
+          <textarea
+            className={classes.PureGatheringBox_input}
+            rows={2}
+            value={desc}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            autoFocus
+            onBlur={handleBlur}
+          ></textarea>
+        ) : (
+          description
+        )}
+        {onEdit ? (
+          <ImPencil2 className={classes.PureGatheringBox_edit_icon} />
+        ) : null}
+      </div>
     </div>
   ) : null;
 
@@ -104,6 +163,18 @@ const useStyles = createUseStyles({
         opacity: 1,
       },
     },
+  },
+  PureGatheringBox_input: {
+    border: 0,
+    outline: 0,
+    resize: 'none',
+    width: '100%',
+  },
+  PureGatheringBox_editable: {
+    cursor: 'pointer',
+  },
+  PureGatheringBox_edit_icon: {
+    marginLeft: 12,
   },
   PureGatheringBox_overlay: {
     color: 'rgba(0, 0, 0, 0.5)',
@@ -194,6 +265,7 @@ const useStyles = createUseStyles({
     lineHeight: '1.25em',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    userSelect: 'none',
   },
   PureGatheringBox_menu: {
     bottom: 0,

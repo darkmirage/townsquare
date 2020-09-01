@@ -26,6 +26,18 @@ const JOIN_GATHERING = gql`
   }
 `;
 
+const UPDATE_GATHERING = gql`
+  mutation UpdateGathering($gatheringId: Int!, $description: String!) {
+    update_gathering_by_pk(
+      pk_columns: { id: $gatheringId }
+      _set: { description: $description }
+    ) {
+      id
+      description
+    }
+  }
+`;
+
 const GatheringBox = (props: Props) => {
   const {
     description,
@@ -36,6 +48,7 @@ const GatheringBox = (props: Props) => {
   const { townerId } = React.useContext(TownerContext);
   const { connectionState } = React.useContext(AgoraContext);
   const [joinGathering, { loading }] = useMutation(JOIN_GATHERING);
+  const [updateGathering] = useMutation(UPDATE_GATHERING);
   const [playNotification] = useSound('/notification.mp3', { volume: 0.25 });
 
   let isActive = false;
@@ -63,6 +76,13 @@ const GatheringBox = (props: Props) => {
     joinGathering({ variables: { gatheringId: id, leave: isActive } });
   }, [joinGathering, isActive, id]);
 
+  const handleEdit = React.useCallback(
+    (description: string) => {
+      updateGathering({ variables: { gatheringId: id, description } });
+    },
+    [updateGathering, id]
+  );
+
   const menu = (
     <Button onClick={handleClick} loading={loading}>
       {isActive ? 'Leave' : 'Join'}
@@ -83,6 +103,7 @@ const GatheringBox = (props: Props) => {
       isLocked={isInviteOnly && !isActive}
       description={description}
       loading={loading}
+      onEdit={isModerator ? handleEdit : null}
     >
       {towners}
     </PureGatheringBox>
