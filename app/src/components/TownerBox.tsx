@@ -78,7 +78,9 @@ const TownerBox = ({
         <div className={classes.TownerBox_label}>
           {participant.is_moderator ? (
             <span className={classes.TownerBox_moderator} role="presentation">
-              👑{' '}
+              <span role="img" aria-label="host">
+                👑
+              </span>{' '}
             </span>
           ) : null}
           {name}
