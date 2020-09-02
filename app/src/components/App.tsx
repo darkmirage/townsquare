@@ -6,6 +6,7 @@ import { AnimateSharedLayout } from 'framer-motion';
 
 import AgoraProvider from './AgoraProvider';
 import AuthProvider from './AuthProvider';
+import Footer from './Footer';
 import PrivateRoute from './PrivateRoute';
 import SignInScreen from './SignInScreen';
 import SquareScreen from './SquareScreen';
@@ -34,20 +35,23 @@ const App = () => {
           </AgoraProvider>
         </AnimateSharedLayout>
       </div>
+      <Footer />
     </div>
   );
 };
 
 const useStyles = createUseStyles({
   App: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
     display: 'flex',
-    height: '100%',
-    justifyContent: 'center',
+    minHeight: '100%',
+    justifyContent: 'flex-start',
+    flexDirection: 'column',
   },
   App_container: {
-    minHeight: '90%',
+    minHeight: '90vh',
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
   },
