@@ -52,8 +52,10 @@ const SquareScreen = (
       unauthorized={<UnauthorizedMessage name={square.name} />}
     >
       <UserToolbar />
+      <h1>Gatherings</h1>
       <ActiveGathering />
       <GatheringList square={square} />
+      <h1>Towners</h1>
       <TownerList square={square} />
     </TownerProvider>
   ) : (
@@ -72,6 +74,13 @@ const useStyles = createUseStyles({
   SquareScreen: {
     maxWidth: 960,
     padding: 16,
+    '& h1': {
+      color: 'rgba(0, 0, 0, 0.7)',
+      fontSize: 24,
+      marginBottom: 24,
+      marginTop: 24,
+      pointerEvents: 'none',
+    },
   },
   SquareScreen_name: {
     display: 'none',

@@ -26,6 +26,7 @@ const useStyles = createUseStyles({
   TownerList: {
     display: 'flex',
     flexWrap: 'wrap',
+    marginLeft: -8,
     width: '100%',
   },
 });
