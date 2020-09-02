@@ -2,7 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql, useMutation } from '@apollo/client';
 import classNames from 'classnames';
-import { motion, useSpring } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ImVolumeMute2 } from 'react-icons/im';
 
 import { getInitials } from 'utils';
@@ -81,7 +81,11 @@ const TownerBox = ({
       onClick={active ? handleClick : undefined}
     >
       <div className={classes.TownerBox_avatar}>
-        {user.photo_url ? <img src={user.photo_url}></img> : initials}
+        {user.photo_url ? (
+          <img src={user.photo_url} alt="profile"></img>
+        ) : (
+          initials
+        )}
       </div>
       <AgoraSpeaker uid={`user-${user.id}`} />
       {showName ? (
