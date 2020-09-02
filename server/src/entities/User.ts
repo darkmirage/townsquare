@@ -23,4 +23,11 @@ export default class User {
     unique: true,
   })
   firebaseId: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    default: null,
+  })
+  photoUrl: string;
 }
