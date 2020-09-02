@@ -35,7 +35,6 @@ type Props = {
     };
   };
   clickable?: boolean;
-  isUser?: boolean;
   showName?: boolean;
   showMute?: boolean;
   showIndicator?: boolean;
@@ -44,7 +43,6 @@ type Props = {
 const TownerBox = ({
   towner,
   clickable = false,
-  isUser = false,
   showMute = false,
   showName = true,
   showIndicator = true,
@@ -59,7 +57,7 @@ const TownerBox = ({
   } = towner;
   const [joinTowner, { loading }] = useMutation(JOIN_TOWNER);
 
-  const active = clickable && isOnline && !isUser && !loading && !isAway;
+  const active = clickable && isOnline && !loading && !isAway;
 
   const initials = getInitials(name);
 
@@ -74,7 +72,6 @@ const TownerBox = ({
       layoutId={`towner-${towner.id}`}
       className={classNames(classes.TownerBox, {
         [classes.TownerBox_clickable]: active,
-        [classes.TownerBox_user]: isUser,
         [classes.TownerBox_offline]: !isOnline,
       })}
       role={active ? 'button' : undefined}
@@ -128,11 +125,6 @@ const useStyles = createUseStyles({
     margin: 8,
     position: 'relative',
     width: 64,
-  },
-  TownerBox_user: {
-    '& $TownerBox_avatar': {
-      backgroundColor: '#333',
-    },
   },
   TownerBox_clickable: {
     cursor: 'pointer',

@@ -3,7 +3,6 @@ import { gql, useMutation } from '@apollo/client';
 import useSound from 'use-sound';
 
 import { AgoraContext } from './AgoraProvider';
-import { TownerContext } from './TownerProvider';
 import Button from './Button';
 import LockToggle from './LockToggle';
 import TownerBox from './TownerBox';
@@ -16,6 +15,8 @@ type Props = {
     description: string;
     participants: any[];
   };
+  isModerator?: boolean;
+  isActive?: boolean;
 };
 
 const JOIN_GATHERING = gql`
@@ -38,35 +39,25 @@ const UPDATE_GATHERING = gql`
   }
 `;
 
-const GatheringBox = (props: Props) => {
+const GatheringBox = ({
+  isModerator = false,
+  isActive = false,
+  gathering,
+}: Props) => {
   const {
     description,
     participants,
     id,
     is_invite_only: isInviteOnly,
-  } = props.gathering;
-  const { townerId } = React.useContext(TownerContext);
+  } = gathering;
   const { connectionState } = React.useContext(AgoraContext);
   const [joinGathering, { loading }] = useMutation(JOIN_GATHERING);
   const [updateGathering] = useMutation(UPDATE_GATHERING);
   const [playNotification] = useSound('/notification.mp3', { volume: 0.25 });
 
-  let isActive = false;
-  let isModerator = false;
-
-  const towners = participants.map((p) => {
-    const isUser = townerId === p.towner.id;
-    if (isUser) {
-      isActive = true;
-      if (p.is_moderator) {
-        isModerator = true;
-      }
-    }
-
-    return (
-      <TownerBox key={p.towner.id} towner={p.towner} showMute isUser={isUser} />
-    );
-  });
+  const towners = participants.map((p) => (
+    <TownerBox key={p.towner.id} towner={p.towner} showMute />
+  ));
   const content =
     towners.length === 4 ? (
       <div style={{ width: 160, display: 'flex', flexWrap: 'wrap' }}>

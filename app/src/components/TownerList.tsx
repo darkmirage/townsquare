@@ -15,7 +15,7 @@ const TownerList = (props: Props) => {
   const classes = useStyles();
   const elems = towners.map((towner: any) =>
     townerId !== towner.id ? (
-      <TownerBox key={towner.id} towner={towner} clickable isUser={false} />
+      <TownerBox key={towner.id} towner={towner} clickable />
     ) : null
   );
 

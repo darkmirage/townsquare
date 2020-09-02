@@ -69,12 +69,7 @@ const UserToolbar = () => {
       <MuteToggle participant={participant} />
     ) : (
       <>
-        <TownerBox
-          towner={towner}
-          showIndicator={false}
-          showName={false}
-          isUser
-        />
+        <TownerBox towner={towner} showIndicator={false} showName={false} />
         <div className={classes.UserToolbar_controls}>
           <div className={classes.UserToolbar_name}>{towner.name}</div>
           <div className={classes.UserToolbar_status} onClick={handleClick}>
