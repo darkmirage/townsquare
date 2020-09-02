@@ -111,7 +111,7 @@ const useStyles = createUseStyles({
     padding: 16,
     '& h1': {
       color: 'rgba(0, 0, 0, 0.7)',
-      fontSize: 24,
+      fontSize: 20,
       marginBottom: 24,
       marginTop: 24,
       useSelect: 'none',
@@ -127,8 +127,9 @@ const useStyles = createUseStyles({
     color: '#aaa',
     cursor: 'pointer',
     display: 'inline-block',
-    fontSize: 20,
+    fontSize: 16,
     margin: 4,
+    paddingTop: 4,
     position: 'relative',
     transition: 'color 200ms',
     '&:hover': {
