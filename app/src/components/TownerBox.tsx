@@ -2,7 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql, useMutation } from '@apollo/client';
 import classNames from 'classnames';
-import { motion } from 'framer-motion';
+import { motion, useSpring } from 'framer-motion';
 import { ImVolumeMute2 } from 'react-icons/im';
 
 import { getInitials } from 'utils';
@@ -25,7 +25,10 @@ type Props = {
     id: number;
     is_online: boolean;
     is_away: boolean;
-    user_id: number;
+    user: {
+      id: number;
+      photo_url: string;
+    };
     participant: {
       is_moderator: boolean;
       is_muted: boolean;
@@ -50,7 +53,7 @@ const TownerBox = ({
   const {
     name,
     is_online: isOnline,
-    user_id: userId,
+    user,
     is_away: isAway,
     participant,
   } = towner;
@@ -77,8 +80,10 @@ const TownerBox = ({
       role={active ? 'button' : undefined}
       onClick={active ? handleClick : undefined}
     >
-      <div className={classes.TownerBox_avatar}>{initials}</div>
-      <AgoraSpeaker uid={`user-${userId}`} />
+      <div className={classes.TownerBox_avatar}>
+        {user.photo_url ? <img src={user.photo_url}></img> : initials}
+      </div>
+      <AgoraSpeaker uid={`user-${user.id}`} />
       {showName ? (
         <div className={classes.TownerBox_label}>
           {participant.is_moderator ? (
@@ -139,8 +144,14 @@ const useStyles = createUseStyles({
     fontSize: 24,
     height: 64,
     justifyContent: 'center',
+    overflow: 'hidden',
     userSelect: 'none',
     width: 64,
+    '& img': {
+      maxHeight: '100%',
+      maxWidth: '100%',
+      objectFit: 'cover',
+    },
   },
   TownerBox_label: {
     fontSize: 14,
@@ -202,7 +213,10 @@ TownerBox.fragments = {
       is_online
       is_away
       is_visitor
-      user_id
+      user {
+        id
+        photo_url
+      }
       participant {
         is_moderator
         is_speaking

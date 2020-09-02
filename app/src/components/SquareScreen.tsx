@@ -6,6 +6,7 @@ import { ImQuestion } from 'react-icons/im';
 
 import ActiveGathering from './ActiveGathering';
 import GatheringList from './GatheringList';
+import PhotoUpdater from './PhotoUpdater';
 import Spinner from './Spinner';
 import TownerList from './TownerList';
 import TownerProvider from './TownerProvider';
@@ -92,6 +93,7 @@ const SquareScreen = (
       </h1>
 
       <TownerList square={square} />
+      <PhotoUpdater />
     </TownerProvider>
   ) : (
     <WelcomeMessage name={square.name} onClick={handleClick} />
