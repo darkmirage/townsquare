@@ -16,6 +16,7 @@ type Props = {
   loading?: boolean;
   menu?: React.ReactNode;
   overlay?: React.ReactNode;
+  hideHeader?: boolean;
 };
 
 function getColor(connectionState: ConnectionState): string {
@@ -49,6 +50,7 @@ const PureGatheringBox = ({
   loading = false,
   menu = null,
   overlay = null,
+  hideHeader = false,
 }: Props) => {
   const classes = useStyles({ connectionState });
   const [editing, setEditing] = React.useState(false);
@@ -95,7 +97,11 @@ const PureGatheringBox = ({
   ) : null;
 
   const header = description ? (
-    <div className={classes.PureGatheringBox_header}>
+    <div
+      className={classNames(classes.PureGatheringBox_header, {
+        [classes.PureGatheringBox_hide]: hideHeader,
+      })}
+    >
       <div
         className={classNames(classes.PureGatheringBox_label, {
           [classes.PureGatheringBox_editable]: !!onEdit,
@@ -147,6 +153,7 @@ const useStyles = createUseStyles({
     borderRadius: 12,
     marginBottom: 24,
     marginRight: 24,
+    marginTop: 28,
     position: 'relative',
     transition: 'background 200ms, border 200ms',
     '&:hover': {
@@ -246,17 +253,19 @@ const useStyles = createUseStyles({
     borderTopRightRadius: 12,
     borderTopLeftRadius: 12,
     background: 'rgba(229, 229, 229)',
-    opacity: 0,
     padding: 8,
     position: 'absolute',
     top: 0,
     transform: 'translateY(calc(-100%))',
     transition: 'opacity 200ms, background 200ms, color 200ms',
-    visibility: 'hidden',
     '&:hover': {
       opacity: 1,
       visibility: 'visible',
     },
+  },
+  PureGatheringBox_hide: {
+    opacity: 0,
+    visibility: 'hidden',
   },
   PureGatheringBox_label: {
     fontSize: 16,
