@@ -28,6 +28,9 @@ const useStyles = createUseStyles({
     '& *': {
       margin: 8,
     },
+    '@media (max-width: 600px)': {
+      flexDirection: 'column',
+    },
   },
 });
 

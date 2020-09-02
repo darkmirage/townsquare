@@ -51,6 +51,7 @@ const LockToggle = (props: Props) => {
 
 const useStyles = createUseStyles({
   LockToggle: {
+    color: '#999',
     display: 'flex',
     alignItems: 'center',
     '&:hover': {

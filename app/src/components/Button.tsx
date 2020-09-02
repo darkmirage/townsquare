@@ -38,7 +38,7 @@ const Button = ({
 
 const useStyles = createUseStyles({
   Button: {
-    background: '#aaa',
+    background: '#999',
     borderRadius: 4,
     color: '#fff',
     cursor: 'pointer',
