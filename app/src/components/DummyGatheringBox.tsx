@@ -2,6 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql, useMutation, useSubscription } from '@apollo/client';
 import { motion } from 'framer-motion';
+import { ImPlus } from 'react-icons/im';
 
 import { TownerContext } from './TownerProvider';
 import Button from './Button';
@@ -50,8 +51,8 @@ const DummyGatheringBox = () => {
   }, [data, setShow]);
 
   const menu = (
-    <Button onClick={handleClick} loading={loading}>
-      Create
+    <Button onClick={handleClick} loading={loading} round>
+      <ImPlus />
     </Button>
   );
 

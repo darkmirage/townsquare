@@ -2,7 +2,6 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import classNames from 'classnames';
 import { ConnectionState } from 'agora-rtc-sdk-ng';
-import { motion } from 'framer-motion';
 import { ImPencil2 } from 'react-icons/im';
 
 type Props = {
@@ -17,6 +16,7 @@ type Props = {
   menu?: React.ReactNode;
   overlay?: React.ReactNode;
   hideHeader?: boolean;
+  footer?: React.ReactNode;
 };
 
 function getColor(connectionState: ConnectionState): string {
@@ -51,6 +51,7 @@ const PureGatheringBox = ({
   menu = null,
   overlay = null,
   hideHeader = false,
+  footer = null,
 }: Props) => {
   const classes = useStyles({ connectionState });
   const [editing, setEditing] = React.useState(false);
@@ -129,20 +130,43 @@ const PureGatheringBox = ({
   ) : null;
 
   return (
-    <motion.div
-      layoutId={`gathering-${id}`}
+    <div
       className={classNames(classes.PureGatheringBox, {
         [classes.PureGatheringBox_active]: isActive,
         [classes.PureGatheringBox_locked]: isLocked,
       })}
     >
       {header}
-      <div className={classes.PureGatheringBox_overlay}>{overlay}</div>
+      <div
+        className={classNames(
+          classes.PureGatheringBox_overlay,
+          classes.PureGatheringBox_hide
+        )}
+      >
+        {overlay}
+      </div>
       <div className={classes.PureGatheringBox_content}>{children}</div>
       {connectionMessage}
-      <div className={classes.PureGatheringBox_menu}>{menu}</div>
+      <div
+        className={classNames(
+          classes.PureGatheringBox_menu,
+          classes.PureGatheringBox_hide
+        )}
+      >
+        {menu}
+      </div>
+      {footer ? (
+        <div
+          className={classNames(
+            classes.PureGatheringBox_footer,
+            classes.PureGatheringBox_hide
+          )}
+        >
+          {footer}
+        </div>
+      ) : null}
       {spinner}
-    </motion.div>
+    </div>
   );
 };
 
@@ -161,11 +185,7 @@ const useStyles = createUseStyles({
       '& $PureGatheringBox_menu': {
         opacity: 1.0,
       },
-      '& $PureGatheringBox_header': {
-        visibility: 'visible',
-        opacity: 1,
-      },
-      '& $PureGatheringBox_overlay': {
+      '& $PureGatheringBox_hide': {
         visibility: 'visible',
         opacity: 1,
       },
@@ -185,11 +205,9 @@ const useStyles = createUseStyles({
   },
   PureGatheringBox_overlay: {
     color: 'rgba(0, 0, 0, 0.5)',
-    opacity: 0,
     padding: 8,
     position: 'absolute',
     transition: 'opacity 200ms',
-    visibility: 'hidden',
     zIndex: 3,
   },
   PureGatheringBox_locked: {
@@ -219,8 +237,9 @@ const useStyles = createUseStyles({
       background: `rgb(${getColor(connectionState)})`,
     },
     '& $PureGatheringBox_content': {
+      maxWidth: 'initial',
       padding: 24,
-      paddingBottom: 32,
+      paddingBottom: 0,
     },
   }),
   PureGatheringBox_status: ({ connectionState }) => ({
@@ -263,6 +282,9 @@ const useStyles = createUseStyles({
       visibility: 'visible',
     },
   },
+  PureGatheringBox_footer: {
+    height: 48,
+  },
   PureGatheringBox_hide: {
     opacity: 0,
     visibility: 'hidden',
@@ -278,10 +300,9 @@ const useStyles = createUseStyles({
   },
   PureGatheringBox_menu: {
     bottom: 0,
-    opacity: 0,
+    padding: 8,
     position: 'absolute',
     right: 0,
-    transform: 'translate(-8px, 16px)',
     transition: '200ms',
   },
 });

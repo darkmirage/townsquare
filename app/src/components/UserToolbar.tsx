@@ -2,7 +2,6 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { gql, useSubscription, useMutation } from '@apollo/client';
 
-import MuteToggle from './MuteToggle';
 import OnlineIndicator from './OnlineIndicator';
 import { TownerContext } from './TownerProvider';
 import TownerBox from './TownerBox';
@@ -17,7 +16,6 @@ const GET_TOWNER = gql`
       ...TownerBoxTowner
       participant {
         id
-        ...MuteToggleParticipant
         gathering {
           id
         }
@@ -26,7 +24,6 @@ const GET_TOWNER = gql`
   }
 
   ${TownerBox.fragments.towner}
-  ${MuteToggle.fragments.participant}
 `;
 
 const SET_AWAY = gql`
@@ -65,9 +62,7 @@ const UserToolbar = () => {
     const { towner_by_pk: towner } = data;
     const { participant } = towner;
     const inGathering = !!participant.gathering;
-    body = inGathering ? (
-      <MuteToggle participant={participant} />
-    ) : (
+    body = inGathering ? null : (
       <>
         <TownerBox towner={towner} showIndicator={false} showName={false} />
         <div className={classes.UserToolbar_controls}>

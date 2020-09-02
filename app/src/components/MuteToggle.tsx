@@ -1,16 +1,13 @@
 import React from 'react';
-import classNames from 'classnames';
-import { createUseStyles } from 'react-jss';
 import { gql, useMutation } from '@apollo/client';
 import { ImVolumeMedium, ImVolumeMute2 } from 'react-icons/im';
 
-import Button from './Button';
+import Button, { Props as ButtonProps } from './Button';
 import { setVolume } from 'agoraClient';
-import { RGB_BLUE } from 'colors';
 
 type Props = {
   participant: any;
-};
+} & ButtonProps;
 
 const SET_MUTED = gql`
   mutation SetMuted($participantId: Int!, $isMuted: Boolean!) {
@@ -24,9 +21,8 @@ const SET_MUTED = gql`
   }
 `;
 
-const MuteToggle = (props: Props) => {
-  const classes = useStyles();
-  const { is_muted: isMuted, id } = props.participant;
+const MuteToggle = ({ participant, ...rest }: Props) => {
+  const { is_muted: isMuted, id } = participant;
   const [setMuted, { loading }] = useMutation(SET_MUTED);
 
   const handleClick = React.useCallback(() => {
@@ -42,32 +38,15 @@ const MuteToggle = (props: Props) => {
   }, [isMuted]);
 
   return (
-    <div
-      className={classNames(classes.MuteToggle, {
-        [classes.MuteToggle_unmuted]: !isMuted,
-      })}
+    <Button
+      loading={loading}
+      onClick={handleClick}
+      tooltip={isMuted ? 'Unmute' : 'Mute'}
+      round
+      {...rest}
     >
-      <Button
-        className={classes.MuteToggle_button}
-        loading={loading}
-        onClick={handleClick}
-      >
-        {isMuted ? 'Unmute' : 'Mute'}
-      </Button>
-      <div className={classes.MuteToggle_label}>
-        {isMuted ? (
-          <>
-            <ImVolumeMute2 className={classes.MuteToggle_icon} />
-            You are muted
-          </>
-        ) : (
-          <>
-            <ImVolumeMedium className={classes.MuteToggle_icon} />
-            You are speaking
-          </>
-        )}
-      </div>
-    </div>
+      {isMuted ? <ImVolumeMedium /> : <ImVolumeMute2 />}
+    </Button>
   );
 };
 
@@ -80,31 +59,5 @@ MuteToggle.fragments = {
     }
   `,
 };
-
-const useStyles = createUseStyles({
-  MuteToggle: {
-    alignItems: 'flex-start',
-    display: 'flex',
-  },
-  MuteToggle_icon: {
-    margin: 4,
-  },
-  MuteToggle_button: {
-    width: 64,
-  },
-  MuteToggle_unmuted: {
-    '& $MuteToggle_label': {
-      color: `rgb(${RGB_BLUE})`,
-    },
-  },
-  MuteToggle_label: {
-    alignItems: 'center',
-    color: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    fontWeight: 'bold',
-    marginLeft: 8,
-    transition: 'color 200ms',
-  },
-});
 
 export default MuteToggle;

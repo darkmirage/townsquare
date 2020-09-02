@@ -2,36 +2,82 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import classNames from 'classnames';
 
-type Props = React.ComponentPropsWithoutRef<'div'> & {
+export type Props = React.ComponentPropsWithoutRef<'div'> & {
   loading?: boolean;
+  round?: boolean;
+  tooltip?: string;
 };
 
-const Button = ({ className, children, loading = false, ...rest }: Props) => {
+const Button = ({
+  className,
+  children,
+  loading = false,
+  round = false,
+  tooltip = '',
+  ...rest
+}: Props) => {
   const classes = useStyles();
 
   return (
     <div
-      className={classNames(classes.Button, className)}
+      className={classNames(
+        classes.Button,
+        {
+          [classes.Button_round]: round,
+        },
+        className
+      )}
       role="button"
       {...rest}
     >
       {children}
+      {tooltip ? <div className={classes.Button_tooltip}>{tooltip}</div> : null}
     </div>
   );
 };
 
 const useStyles = createUseStyles({
   Button: {
-    background: '#808080',
+    background: '#aaa',
     borderRadius: 4,
     color: '#fff',
     cursor: 'pointer',
     padding: '4px 8px',
+    position: 'relative',
     transition: 'color 200ms, filter 200ms',
     userSelect: 'none',
     '&:hover': {
+      boxShadow: '0 0 2px rgba(0, 0, 0, 0.3)',
       filter: 'brightness(90%)',
+      '& $Button_tooltip': {
+        opacity: 1,
+        visibility: 'visible',
+      },
     },
+  },
+  Button_round: {
+    alignItems: 'center',
+    borderRadius: 16,
+    display: 'flex',
+    height: 32,
+    justifyContent: 'center',
+    padding: 0,
+    width: 32,
+  },
+  Button_tooltip: {
+    background: '#333',
+    borderRadius: 4,
+    color: '#fff',
+    fontSize: 14,
+    left: '50%',
+    opacity: 0,
+    padding: 4,
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: 0,
+    transform: 'translate(-50%, -28px)',
+    transition: '200ms',
+    visibility: 'hidden',
   },
 });
 

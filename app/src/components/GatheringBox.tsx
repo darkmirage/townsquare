@@ -3,7 +3,8 @@ import { gql, useMutation } from '@apollo/client';
 import useSound from 'use-sound';
 
 import { AgoraContext } from './AgoraProvider';
-import Button from './Button';
+import GatheringToolbar from './GatheringToolbar';
+import JoinGatheringButton from './JoinGatheringButton';
 import LockToggle from './LockToggle';
 import TownerBox from './TownerBox';
 import PureGatheringBox from './PureGatheringBox';
@@ -18,14 +19,6 @@ type Props = {
   isModerator?: boolean;
   isActive?: boolean;
 };
-
-const JOIN_GATHERING = gql`
-  mutation JoinGathering($gatheringId: Int!, $leave: Boolean!) {
-    joinGathering(gatheringId: $gatheringId, leave: $leave) {
-      success
-    }
-  }
-`;
 
 const UPDATE_GATHERING = gql`
   mutation UpdateGathering($gatheringId: Int!, $description: String!) {
@@ -51,7 +44,6 @@ const GatheringBox = ({
     is_invite_only: isInviteOnly,
   } = gathering;
   const { connectionState } = React.useContext(AgoraContext);
-  const [joinGathering, { loading }] = useMutation(JOIN_GATHERING);
   const [updateGathering] = useMutation(UPDATE_GATHERING);
   const [playNotification] = useSound('/notification.mp3', { volume: 0.25 });
 
@@ -73,10 +65,6 @@ const GatheringBox = ({
     }
   }, [playNotification, connectionState]);
 
-  const handleClick = React.useCallback(() => {
-    joinGathering({ variables: { gatheringId: id, leave: isActive } });
-  }, [joinGathering, isActive, id]);
-
   const handleEdit = React.useCallback(
     (description: string) => {
       updateGathering({ variables: { gatheringId: id, description } });
@@ -84,10 +72,8 @@ const GatheringBox = ({
     [updateGathering, id]
   );
 
-  const menu = (
-    <Button onClick={handleClick} loading={loading}>
-      {isActive ? 'Leave' : 'Join'}
-    </Button>
+  const menu = isActive ? null : (
+    <JoinGatheringButton gatheringId={id} leave={isActive} />
   );
 
   const overlay = (
@@ -103,8 +89,8 @@ const GatheringBox = ({
       isActive={isActive}
       isLocked={isInviteOnly && !isActive}
       description={description}
-      loading={loading}
       onEdit={isModerator ? handleEdit : null}
+      footer={isActive ? <GatheringToolbar gatheringId={id} /> : null}
     >
       {content}
     </PureGatheringBox>
