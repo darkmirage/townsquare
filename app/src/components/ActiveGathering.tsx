@@ -3,6 +3,7 @@ import { gql, useSubscription, useLazyQuery } from '@apollo/client';
 
 import { TownerContext } from './TownerProvider';
 import AgoraChannel from './AgoraChannel';
+import { userIdToUid } from 'agoraClient';
 
 const GET_ACTIVE_GATHERING = gql`
   subscription GetActiveGathering($townerId: Int!) {
@@ -48,7 +49,7 @@ const ActiveGathering = () => {
   const channel = data
     ? (data.participant[0].gathering?.channel as string)
     : null;
-  const userId = data ? (data.participant[0].towner.user_id as string) : null;
+  const userId = data ? (data.participant[0].towner.user_id as number) : null;
   const token = tokenData ? (tokenData.agora.token as string) : null;
 
   if (loading || tokenLoading) {
@@ -56,7 +57,7 @@ const ActiveGathering = () => {
   }
 
   return channel && token && userId ? (
-    <AgoraChannel channel={channel} token={token} uid={`user-${userId}`} />
+    <AgoraChannel channel={channel} token={token} uid={userIdToUid(userId)} />
   ) : null;
 };
 

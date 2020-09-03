@@ -9,13 +9,13 @@ type Props = {
   connectionState?: ConnectionState;
   description?: string;
   onEdit?: ((newDescription: string) => void) | null;
-  id: number;
   isActive?: boolean;
   isLocked?: boolean;
   loading?: boolean;
   menu?: React.ReactNode;
   overlay?: React.ReactNode;
   hideHeader?: boolean;
+  canvas?: React.ReactNode;
   footer?: React.ReactNode;
 };
 
@@ -40,7 +40,6 @@ function getColor(connectionState: ConnectionState): string {
 }
 
 const PureGatheringBox = ({
-  id,
   children,
   connectionState = 'DISCONNECTED',
   description = '',
@@ -51,6 +50,7 @@ const PureGatheringBox = ({
   menu = null,
   overlay = null,
   hideHeader = false,
+  canvas = null,
   footer = null,
 }: Props) => {
   const classes = useStyles({ connectionState });
@@ -155,6 +155,7 @@ const PureGatheringBox = ({
       >
         {menu}
       </div>
+      <div>{canvas}</div>
       {footer ? (
         <div
           className={classNames(

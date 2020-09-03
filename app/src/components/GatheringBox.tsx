@@ -3,6 +3,7 @@ import { gql, useMutation } from '@apollo/client';
 import useSound from 'use-sound';
 
 import { AgoraContext } from './AgoraProvider';
+import ActiveCanvas from './ActiveCanvas';
 import GatheringToolbar from './GatheringToolbar';
 import JoinGatheringButton from './JoinGatheringButton';
 import LockToggle from './LockToggle';
@@ -82,7 +83,6 @@ const GatheringBox = ({
 
   return (
     <PureGatheringBox
-      id={id}
       menu={menu}
       overlay={overlay}
       connectionState={connectionState}
@@ -90,6 +90,16 @@ const GatheringBox = ({
       isLocked={isInviteOnly && !isActive}
       description={description}
       onEdit={isModerator ? handleEdit : null}
+      canvas={
+        isActive ? (
+          <ActiveCanvas
+            names={participants.map((p) => ({
+              name: p.towner.name,
+              userId: p.towner.user_id,
+            }))}
+          />
+        ) : null
+      }
       footer={isActive ? <GatheringToolbar gatheringId={id} /> : null}
     >
       {content}
@@ -110,6 +120,7 @@ GatheringBox.fragments = {
         towner {
           id
           user_id
+          name
           ...TownerBoxTowner
         }
       }

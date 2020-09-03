@@ -66,8 +66,8 @@ const DummyGatheringBox = () => {
       animate={{ opacity: 1 }}
       layoutId="gathering-new"
     >
-      <PureGatheringBox id={0} menu={menu}>
-        <div className={classes.DummyGatheringBox}>New Gathering</div>
+      <PureGatheringBox menu={menu} description="New gathering">
+        <div className={classes.DummyGatheringBox}>Empty</div>
       </PureGatheringBox>
     </motion.div>
   );

@@ -10,6 +10,7 @@ import Footer from './Footer';
 import PrivateRoute from './PrivateRoute';
 import SignInScreen from './SignInScreen';
 import SquareScreen from './SquareScreen';
+import VideoProvider from './VideoProvider';
 import apolloClient from 'apolloClient';
 
 const App = () => {
@@ -30,7 +31,9 @@ const App = () => {
         <AnimateSharedLayout>
           <AgoraProvider>
             <ApolloProvider client={apolloClient}>
-              <AuthProvider>{routes}</AuthProvider>
+              <VideoProvider>
+                <AuthProvider>{routes}</AuthProvider>
+              </VideoProvider>
             </ApolloProvider>
           </AgoraProvider>
         </AnimateSharedLayout>

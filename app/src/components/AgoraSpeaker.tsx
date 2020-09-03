@@ -34,7 +34,7 @@ const AgoraSpeaker = ({ uid }: Props) => {
 
   const handlePublished = React.useCallback(
     async (user: IAgoraRTCRemoteUser, mediaType: 'audio' | 'video') => {
-      if (user.uid === uid) {
+      if (user.uid === uid && mediaType === 'audio') {
         await agoraClient.subscribe(user, mediaType);
         const { audioTrack } = user;
         if (audioTrack) {

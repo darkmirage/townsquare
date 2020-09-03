@@ -6,6 +6,7 @@ export type Props = React.ComponentPropsWithoutRef<'div'> & {
   loading?: boolean;
   round?: boolean;
   tooltip?: string;
+  disabled?: boolean;
 };
 
 const Button = ({
@@ -14,6 +15,7 @@ const Button = ({
   loading = false,
   round = false,
   tooltip = '',
+  disabled = false,
   ...rest
 }: Props) => {
   const classes = useStyles();
@@ -24,6 +26,7 @@ const Button = ({
         classes.Button,
         {
           [classes.Button_round]: round,
+          [classes.Button_disabled]: disabled || loading,
         },
         className
       )}
@@ -55,6 +58,11 @@ const useStyles = createUseStyles({
       },
     },
   },
+  Button_disabled: {
+    opacity: 0.5,
+    cursor: 'default',
+    pointerEvents: 'none',
+  },
   Button_round: {
     alignItems: 'center',
     borderRadius: 16,
@@ -75,7 +83,7 @@ const useStyles = createUseStyles({
     pointerEvents: 'none',
     position: 'absolute',
     top: 0,
-    transform: 'translate(-50%, -28px)',
+    transform: 'translate(-50%, calc(-100% - 4px))',
     transition: '200ms',
     visibility: 'hidden',
   },

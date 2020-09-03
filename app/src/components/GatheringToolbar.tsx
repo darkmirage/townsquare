@@ -5,6 +5,7 @@ import { gql, useSubscription } from '@apollo/client';
 import { TownerContext } from './TownerProvider';
 import JoinGatheringButton from './JoinGatheringButton';
 import MuteToggle from './MuteToggle';
+import ShareScreenButton from './ShareScreenButton';
 
 type Props = {
   gatheringId: number;
@@ -45,6 +46,7 @@ const GatheringToolbar = ({ gatheringId }: Props) => {
 
   return (
     <div className={classes.GatheringToolbar}>
+      <ShareScreenButton className={classes.GatheringToolbar_button} />
       <MuteToggle
         className={classes.GatheringToolbar_button}
         participant={participant}
@@ -62,11 +64,10 @@ const useStyles = createUseStyles({
   GatheringToolbar: {
     display: 'flex',
     justifyContent: 'flex-end',
-    padding: 4,
+    padding: 8,
   },
   GatheringToolbar_button: {
-    marginBottom: 4,
-    marginRight: 4,
+    marginLeft: 8,
   },
 });
 
