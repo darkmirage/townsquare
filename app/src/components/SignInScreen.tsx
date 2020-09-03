@@ -14,9 +14,12 @@ const SignInScreen = (
   React.useEffect(() => {
     if (user) {
       const referrer = props.location.state?.referrer;
+      const { email } = user;
 
       if (referrer) {
         props.history.push(referrer);
+      } else if (email?.includes('@usb.ch')) {
+        props.history.push('/t/usb');
       } else {
         props.history.push('/t/stanford');
       }
